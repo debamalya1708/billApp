@@ -106,10 +106,7 @@ public class UserController {
         if(!userOptional.isEmpty()){
             return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
         }
-//        Option<User> userEmailOptional = userRepository.findByContact(user.getEmail());
-//        if(userOptional.isEmpty()){
-//            return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
-//        }
+
         long id = 0;
         if(user.getRole().equals(UserConstants.AdminRegKey)){
             user.setRole(UserConstants.AdminRole);
