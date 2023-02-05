@@ -59,6 +59,9 @@ public class UserController {
         if(userOptional.isEmpty()){
             return new ResponseEntity<>("User Not found", HttpStatus.NOT_FOUND);
         }
+        else if(userOptional.get().getRole().equals(UserConstants.CustomerRole)){
+            return new ResponseEntity<>("Not authorized to use this app", HttpStatus.UNAUTHORIZED);
+        }
         log.info("#  log in user with mobile - {}", login);
         try {
             this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUserName(),login.getPassword()));
@@ -74,23 +77,33 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public void register(@RequestBody User user){
+    public ResponseEntity<?> register(@RequestBody User user){
+        Option<User> userOptional = userRepository.findByContact(user.getContact());
+        if(!userOptional.isEmpty()){
+            return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
+        }
         System.out.println(user);
+
+        long id = 0;
 
         if(!user.getPassword().equals("")){
             user.setRole(UserConstants.EditorRole);
         }
         else{
-            user.setPassword(user.getContact());
             user.setRole(UserConstants.CustomerRole);
         }
-        userService.saveUser(user);
+        id = userService.saveUser(user).getId();
+
+        if(id > 0){
+            return new ResponseEntity<>("Registered",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/admin/register")
     public ResponseEntity<?> registerAdmin(@RequestBody User user){
         Option<User> userOptional = userRepository.findByContact(user.getContact());
-        if(userOptional.isEmpty()){
+        if(!userOptional.isEmpty()){
             return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
         }
 //        Option<User> userEmailOptional = userRepository.findByContact(user.getEmail());

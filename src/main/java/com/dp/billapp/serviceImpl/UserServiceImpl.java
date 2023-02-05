@@ -29,7 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         System.out.println("save user");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getRole().equals(UserConstants.CustomerRole)){
+            user.setPassword("");
+        }
+        else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userDaoService.register(user);
     }
 
