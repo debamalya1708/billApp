@@ -11,9 +11,12 @@ public interface UserDaoService {
 
     User getUser(String contact);
 
-    Option<User> findByContact(String name);
+    Option<User> findByContact(String phone);
+
+    Option<User> findByEmail(String email);
 
     List<User> getAll(String role);
 
     User findById(long id);
+
 }

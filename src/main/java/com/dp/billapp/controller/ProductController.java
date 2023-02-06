@@ -43,5 +43,14 @@ public class ProductController {
         return ResponseEntity.ok(productOption);
     }
 
+    @GetMapping("/search/id/{id}")
+    public ResponseEntity<?> findProductBySerialNo(@PathVariable long id){
+        Option<Product> productOption = productService.findById(id);
+        if(productOption.isEmpty())
+            return new ResponseEntity<>("Product Not exists!", HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(productOption);
+    }
+
 
 }

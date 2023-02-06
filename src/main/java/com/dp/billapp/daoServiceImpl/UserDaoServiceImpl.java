@@ -9,6 +9,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserDaoServiceImpl implements UserDaoService {
@@ -21,6 +23,7 @@ public class UserDaoServiceImpl implements UserDaoService {
         System.out.println("dao service user");
         System.out.println(user);
         Option<User> userOptional = userRepository.findByContact(user.getContact());
+
         if(userOptional.isEmpty()){
             return userRepository.save(user);
         }
@@ -47,6 +50,11 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
+    public Option<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public List<User> getAll(String role) {
         return userRepository.findByRole(role);
     }
@@ -55,4 +63,5 @@ public class UserDaoServiceImpl implements UserDaoService {
     public User findById(long id) {
         return userRepository.findById(id).get();
     }
+
 }

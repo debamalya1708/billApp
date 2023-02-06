@@ -9,15 +9,24 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
+    Pattern pattern = Pattern.compile(regex);
+
 
     private final UserRepository userRepository;
 
@@ -29,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         System.out.println("save user");
+
         if(user.getRole().equals(UserConstants.CustomerRole)){
             user.setPassword("");
         }
@@ -51,6 +61,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public Option<User> findByContact(String contact) {
         return userDaoService.findByContact(contact);
+    }
+
+    @Override
+    public Option<User> findByEmail(String email) {
+        return userDaoService.findByEmail(email);
+    }
+
+
+    @Override
+    public boolean isEmailValid(String email) {
+        Matcher matcher = pattern.matcher(email);
+        System.out.println("user email valid: "+matcher.matches());
+        return matcher.matches();
     }
 
     @Override

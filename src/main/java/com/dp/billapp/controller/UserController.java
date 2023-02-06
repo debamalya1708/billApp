@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -51,6 +53,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
 
 
     @PostMapping("/login")
@@ -79,9 +82,25 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user){
         Option<User> userOptional = userRepository.findByContact(user.getContact());
-        if(!userOptional.isEmpty()){
-            return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
+        Option<User> singleUser = userRepository.findByEmail(user.getEmail());
+        boolean isValidEmail = userService.isEmailValid(user.getEmail());
+
+        if(!isValidEmail){
+            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
         }
+
+
+        if(!userOptional.isEmpty()){
+            return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
+        }
+
+
+
+        if(!singleUser.isEmpty()){
+            return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
+        }
+
+
         System.out.println(user);
 
         long id = 0;
@@ -94,6 +113,7 @@ public class UserController {
         }
         id = userService.saveUser(user).getId();
 
+
         if(id > 0){
             return new ResponseEntity<>("Registered",HttpStatus.OK);
         }
@@ -103,8 +123,13 @@ public class UserController {
     @PostMapping("/admin/register")
     public ResponseEntity<?> registerAdmin(@RequestBody User user){
         Option<User> userOptional = userRepository.findByContact(user.getContact());
+        Option<User> singleUser = userRepository.findByEmail(user.getEmail());
+
         if(!userOptional.isEmpty()){
-            return new ResponseEntity<>("contact no. with user already exists!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("admin with given contact no. already exists", HttpStatus.BAD_REQUEST);
+        }
+        if(!singleUser.isEmpty()){
+            return new ResponseEntity<>("admin with given email already exists", HttpStatus.BAD_REQUEST);
         }
 
         long id = 0;

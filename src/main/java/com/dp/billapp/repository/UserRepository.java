@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Option<User> findByContact(String phone);
+    Option<User> findByEmail(String email);
     List<User> findByRole(String role);
 
 

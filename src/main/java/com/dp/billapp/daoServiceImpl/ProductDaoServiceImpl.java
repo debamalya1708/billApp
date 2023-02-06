@@ -23,4 +23,9 @@ public class ProductDaoServiceImpl implements ProductDaoService {
     public Option<Product> findBySerialNo(String serialNo) {
         return productRepository.findBySerialNo(serialNo);
     }
+
+    @Override
+    public Option<Product> findById(long id) {
+        return productRepository.findById(id);
+    }
 }
