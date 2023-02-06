@@ -8,5 +8,6 @@ public interface ProductDaoService {
 
     Product saveProduct(Product product);
     Option<Product> findBySerialNo(String serialNo);
+    Option<Product> findById(long id);
 
 }

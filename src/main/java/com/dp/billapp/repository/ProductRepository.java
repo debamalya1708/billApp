@@ -12,5 +12,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Option<Product> findBySerialNo(String serialNo);
+    Option<Product> findById(long id);
 
 }
