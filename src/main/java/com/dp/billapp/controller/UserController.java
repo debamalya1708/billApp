@@ -94,14 +94,9 @@ public class UserController {
             return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
         }
 
-
-
         if(!singleUser.isEmpty()){
             return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
         }
-
-
-        System.out.println(user);
 
         long id = 0;
 
@@ -112,7 +107,6 @@ public class UserController {
             user.setRole(UserConstants.CustomerRole);
         }
         id = userService.saveUser(user).getId();
-
 
         if(id > 0){
             return new ResponseEntity<>("Registered",HttpStatus.OK);
