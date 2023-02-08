@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
-@Table(name = "showroom_details")
+@Table(name = "showroom")
 public class Showroom {
 
     @Id
@@ -42,12 +42,11 @@ public class Showroom {
     @Column(name = "hsn_code")
     private String hsnNo;
 
-
     @Column(name = "showroom_logo")
     private String showroomLogo;
 
     @Column(name = "hallmark_logo")
-    private String hallmarkLogo;
+    private String hallMarkLogo;
 
     @Column(name = "signature")
     private String signature;

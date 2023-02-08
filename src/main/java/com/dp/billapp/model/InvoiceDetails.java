@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class InvoiceDetails {
-    User user;
+
     List<InvoiceItem> invoiceItemList;
 }

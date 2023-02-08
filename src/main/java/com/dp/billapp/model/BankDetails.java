@@ -23,6 +23,6 @@ public class BankDetails {
     @Column(name = "account_number")
     private String accountNumber;
 
-    @Column(name = "IFSC_Code")
+    @Column(name = "ifsc_Code")
     private String ifscCode;
 }

@@ -19,6 +19,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,26 +50,33 @@ public class Invoice {
     @Column(name = "invoice_date")
     private String invoiceDate;
 
-    @Column(name = "store_address")
-    private String storeAddress;
 
-    //Showroom class
+    @Type(type = "jsonb")
+    @Column(name = "showroom", columnDefinition = "jsonb")
+    private Showroom showroom;
 
-    //bank details
+    @Type(type = "jsonb")
+    @Column(name = "bank", columnDefinition = "jsonb")
+    private BankDetails bankDetails;
+
+    @Type(type = "jsonb")
+    @Column(name = "customer", columnDefinition = "jsonb")
+    private User customer;
 
     @Column(name = "payment_type")
     private String paymentType;
 
     @Column(name = "s_gst")
-    private String sGst;
+    private double sGst;
 
     @Column(name = "c_gst")
-    private String cGst;
+    private double cGst;
 
     @Column(name = "total_amount")
     private String totalAmount;
 
     @Type(type = "jsonb")
     @Column(name = "invoice_details", columnDefinition = "jsonb")
-    InvoiceDetails invoiceDetails;
+//    InvoiceDetails invoiceDetails;
+    List<InvoiceItem> invoiceDetails;
 }
