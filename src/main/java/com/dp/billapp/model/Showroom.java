@@ -13,11 +13,9 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
-<<<<<<< HEAD
+
 @Table(name = "showroom")
-=======
-@Table(name = "showroom_details")
->>>>>>> origin/Showroom_Details_and_Bank_Details
+
 public class Showroom {
 
     @Id
@@ -46,19 +44,12 @@ public class Showroom {
     @Column(name = "hsn_code")
     private String hsnNo;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Showroom_Details_and_Bank_Details
     @Column(name = "showroom_logo")
     private String showroomLogo;
 
     @Column(name = "hallmark_logo")
-<<<<<<< HEAD
+
     private String hallMarkLogo;
-=======
-    private String hallmarkLogo;
->>>>>>> origin/Showroom_Details_and_Bank_Details
 
     @Column(name = "signature")
     private String signature;
