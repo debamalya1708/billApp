@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
+
 @Table(name = "showroom")
+
 public class Showroom {
 
     @Id
@@ -46,6 +48,7 @@ public class Showroom {
     private String showroomLogo;
 
     @Column(name = "hallmark_logo")
+
     private String hallMarkLogo;
 
     @Column(name = "signature")
