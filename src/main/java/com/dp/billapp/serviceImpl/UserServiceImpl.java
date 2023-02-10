@@ -9,13 +9,12 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,8 +76,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(long id) {
+    public Optional<User> findById(long id) {
         return userDaoService.findById(id);
+    }
+
+    @Override
+    public List<String> getAllContacts() {
+        ArrayList<String> contactList = new ArrayList<>();
+        List<User> userList = userDaoService.getUsers();
+        for(User u:userList){
+            contactList.add(u.getContact());
+        }
+
+        return contactList;
+    }
+
+    @Override
+    public String deleteById(long id) {
+        userDaoService.deleteById(id);
+        return "User has been deleted";
+    }
+
+    @Override
+    public User updateUser(User user) {
+        return userDaoService.updateUser(user);
     }
 
 }

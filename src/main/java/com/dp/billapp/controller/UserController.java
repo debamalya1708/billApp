@@ -3,6 +3,7 @@ package com.dp.billapp.controller;
 import com.dp.billapp.config.JwtResponse;
 import com.dp.billapp.helper.JwtUtil;
 import com.dp.billapp.model.Login;
+import com.dp.billapp.model.Product;
 import com.dp.billapp.model.User;
 import com.dp.billapp.model.UserConstants;
 import com.dp.billapp.repository.UserRepository;
@@ -20,11 +21,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -136,5 +135,39 @@ public class UserController {
         }
         return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/search/{id}")
+    public ResponseEntity<?> searchUserById(@PathVariable long id){
+        Optional<User> userOptional = userService.findById(id);
+        if(!userOptional.isPresent())
+            return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(userOptional);
+
+    }
+
+    @GetMapping("/allContacts")
+    public ResponseEntity<?> allUserContacts(){
+        List<String> contactList = userService.getAllContacts();
+        return ResponseEntity.ok(contactList);
+
+    }
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProduct(@RequestBody User user){
+        Optional<User> userOption = userService.findById(user.getId());
+        if(!userOption.isPresent())
+            return new ResponseEntity<>("User doesn't exists,can't be updated!!!!",HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(userService.updateUser(user));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id){
+        Optional<User> userOption = userService.findById(id);
+        if(userOption.isPresent())
+            return new ResponseEntity<>("Product doesn't exists,can't be deleted!!!!",HttpStatus.NOT_FOUND);
+
+        return  ResponseEntity.ok(userService.deleteById(id));
+    }
+
+
 
 }

@@ -25,4 +25,5 @@ public class InvoiceController {
 
         return ResponseEntity.ok(invoice);
     }
+
 }
