@@ -4,6 +4,7 @@ import com.dp.billapp.model.User;
 import io.vavr.control.Option;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDaoService {
 
@@ -17,6 +18,10 @@ public interface UserDaoService {
 
     List<User> getAll(String role);
 
-    User findById(long id);
+   Optional<User>  findById(long id);
+   List<User> getUsers();
+   String deleteById(long id);
+  User updateUser(User user);
+
 
 }

@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(value="/product")
@@ -50,6 +52,31 @@ public class ProductController {
             return new ResponseEntity<>("Product Not exists!", HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(productOption);
+    }
+
+    @GetMapping("/allSerialNumber")
+    public ResponseEntity<?> allSerialNumbers(){
+        List<String> serialNumberList = productService.getallSerialNo();
+        return ResponseEntity.ok(serialNumberList);
+
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProduct(@RequestBody Product product){
+        Option<Product> productOption = productService.findById(product.getId());
+        if(productOption.isEmpty())
+            return new ResponseEntity<>("Product doesn't exists,can't be updated!!!!",HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(productService.updateProduct(product));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable long id){
+        Option<Product> productOption = productService.findById(id);
+        if(productOption.isEmpty())
+            return new ResponseEntity<>("Product doesn't exists,can't be deleted!!!!",HttpStatus.NOT_FOUND);
+
+        return  ResponseEntity.ok(productService.deleteProduct(id));
     }
 
 
