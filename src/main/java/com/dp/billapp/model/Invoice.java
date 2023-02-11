@@ -15,10 +15,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @NoArgsConstructor
@@ -41,8 +38,9 @@ public class Invoice {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private long id;
 
     @Column(name = "invoice_id")
     private String invoiceId;
@@ -51,16 +49,16 @@ public class Invoice {
     private String invoiceDate;
 
 
-    @Type(type = "jsonb")
-    @Column(name = "showroom", columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(name = "showroom", columnDefinition = "json")
     private Showroom showroom;
 
-    @Type(type = "jsonb")
-    @Column(name = "bank", columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(name = "bank", columnDefinition = "json")
     private BankDetails bankDetails;
 
-    @Type(type = "jsonb")
-    @Column(name = "customer", columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(name = "customer", columnDefinition = "json")
     private User customer;
 
     @Column(name = "payment_type")
@@ -75,8 +73,8 @@ public class Invoice {
     @Column(name = "total_amount")
     private String totalAmount;
 
-    @Type(type = "jsonb")
-    @Column(name = "invoice_details", columnDefinition = "jsonb")
+    @Type(type = "json")
+    @Column(name = "invoice_details", columnDefinition = "jsonn")
 //    InvoiceDetails invoiceDetails;
     List<InvoiceItem> invoiceDetails;
 }

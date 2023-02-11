@@ -3,6 +3,7 @@ package com.dp.billapp.controller;
 
 import com.dp.billapp.model.Showroom;
 import com.dp.billapp.service.ShowroomService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping(value="/showroom")
+@AllArgsConstructor
 
 public class ShowroomController {
 
@@ -21,6 +23,7 @@ public class ShowroomController {
 
     @PostMapping("/save")
     public ResponseEntity<?> saveShowroom(@RequestBody Showroom showroom){
+        log.info("#  showroom - {}", showroom);
         if(showroom == null)
             return new ResponseEntity<>("Invalid input", HttpStatus.BAD_REQUEST);
        Showroom details =showroomService.save(showroom);
