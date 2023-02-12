@@ -39,7 +39,7 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return getExpirationDateFromToken(token).before(new Date());
     }
 
@@ -73,5 +73,17 @@ public class JwtUtil {
             return map;
         }
         return null;
+    }
+
+    public boolean checkUser(HttpServletRequest request){
+        String requestHeader = request.getHeader("Authorization");
+        if(requestHeader != null && requestHeader.startsWith("Bearer ")) {
+            String jwtToken = requestHeader.substring(7);
+            if(!this.isTokenExpired(request.getHeader(jwtToken))){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

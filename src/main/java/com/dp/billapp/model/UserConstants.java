@@ -9,5 +9,6 @@ public class UserConstants {
     public static final String EditorRole = "ROLE_EDITOR";
     public static final String CustomerRole = "ROLE_CUSTOMER";
     public static final String AdminRegKey = "aadmeen";
+    public static final String AuthHeader = "grs_id";
 
 }

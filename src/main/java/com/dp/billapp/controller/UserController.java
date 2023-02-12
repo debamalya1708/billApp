@@ -13,7 +13,9 @@ import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +25,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,8 +50,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    private UserConstants miUserConstants;
-
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -55,7 +57,7 @@ public class UserController {
 
 
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody Login login) throws Exception{
         Option<User> userOptional = userRepository.findByContact(login.getUserName());
         if(userOptional.isEmpty()){
@@ -74,6 +76,9 @@ public class UserController {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(login.getUserName());
         User user  = userService.getUser(login.getUserName());
         final String jwt = jwtUtil.generateToken(user,userDetails);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(UserConstants.AuthHeader, new JwtResponse(jwt).getResponse());
+//        return new ResponseEntity<>("User Authenticated",headers,HttpStatus.OK);
         return new ResponseEntity<>(new JwtResponse(jwt),HttpStatus.OK);
     }
 
@@ -139,7 +144,7 @@ public class UserController {
     @GetMapping("/search/{id}")
     public ResponseEntity<?> searchUserById(@PathVariable long id){
         Optional<User> userOptional = userService.findById(id);
-        if(!userOptional.isPresent())
+        if(userOptional.isEmpty())
             return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(userOptional);
 
@@ -154,7 +159,7 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody User user){
         Optional<User> userOption = userService.findById(user.getId());
-        if(!userOption.isPresent())
+        if(userOption.isEmpty())
             return new ResponseEntity<>("User doesn't exists,can't be updated!!!!",HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(userService.updateUser(user));
@@ -162,10 +167,32 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id){
         Optional<User> userOption = userService.findById(id);
-        if(userOption.isPresent())
-            return new ResponseEntity<>("Product doesn't exists,can't be deleted!!!!",HttpStatus.NOT_FOUND);
+        if(userOption.isEmpty())
+            return new ResponseEntity<>("User doesn't exists,can't be deleted!!!!",HttpStatus.NOT_FOUND);
 
         return  ResponseEntity.ok(userService.deleteById(id));
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkUser(HttpServletRequest request){
+        log.info("request: {}", request);
+        String requestHeader = request.getHeader("Authorization");
+        if(requestHeader!=null && requestHeader.startsWith("Bearer ")) {
+            String jwtToken = requestHeader.substring(7);
+            if(jwtUtil.isTokenExpired(jwtToken)){
+                return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
+            }
+            else if(!jwtUtil.isTokenExpired(jwtToken)){
+                Map<String, String> map = jwtUtil.getJwtTokenDetails(request);
+                Option<User> userOptional = userService.findByContact(map.get(UserConstants.contactNo));
+                if (!userOptional.isEmpty())
+                    return new ResponseEntity<>(userOptional.get(),HttpStatus.OK);
+                else
+                    return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
+            }
+
+        }
+        return new ResponseEntity<>("No Key found",HttpStatus.UNAUTHORIZED);
     }
 
 
