@@ -71,6 +71,11 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceDaoService.saveInvoice(invoice);
     }
 
+    @Override
+    public List<Invoice> getAllInvoice() {
+        return invoiceDaoService.getAllInvoice();
+    }
+
     private String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){

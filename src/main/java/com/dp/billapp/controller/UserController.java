@@ -175,6 +175,10 @@ public class UserController {
 
     @GetMapping("/check")
     public ResponseEntity<?> checkUser(HttpServletRequest request){
+        log.info("request length: {}", request.getContentLength());
+        if(request.getContentLength()==0){
+            return  new ResponseEntity<>("token Not Found!!!",HttpStatus.NOT_FOUND);
+        }
         log.info("request: {}", request);
         String requestHeader = request.getHeader("Authorization");
         if(requestHeader!=null && requestHeader.startsWith("Bearer ")) {
