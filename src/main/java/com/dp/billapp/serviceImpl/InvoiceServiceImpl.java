@@ -36,6 +36,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice saveInvoice(InvoiceRequest invoiceRequest) {
 
+        final double gst = 1.5;
+
         Option<User> user = userRepository.findByContact(invoiceRequest.getUserContact());
 
         Optional<Showroom> showroom = showroomRepository.findById(invoiceRequest.getShowroomId());
@@ -60,11 +62,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setPaymentType(invoiceRequest.getPaymentType());
 
-        invoice.setCGst(1.5);
+        invoice.setCGst(gst);
 
-        invoice.setSGst(1.5);
+        invoice.setSGst(gst);
 
-        invoice.setTotalAmount(getTotalAmount(invoiceRequest.getInvoiceDetails(),1.5, invoiceRequest.getIsGstEnabled()));
+        invoice.setTotalAmount(getTotalAmount(invoiceRequest.getInvoiceDetails(),gst, invoiceRequest.getIsGstEnabled()));
 
         return invoiceDaoService.saveInvoice(invoice);
     }

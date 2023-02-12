@@ -10,11 +10,11 @@
 	</parent>
 	<groupId>com.dp.billapp</groupId>
 	<artifactId>billApp</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>billApp</name>
 	<description>Invoice generator application</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
