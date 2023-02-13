@@ -39,8 +39,8 @@ public class ShowroomController {
     @GetMapping("/search/{id}")
     public ResponseEntity<?> findShowroomById(long id){
        Optional<Showroom> showroomOptional =showroomService.getShowroomById(id);
-       if(!showroomOptional.isPresent())
-           return new ResponseEntity<>("Showrrom doesn't exist",HttpStatus.NOT_FOUND);
+       if(showroomOptional.isEmpty())
+           return new ResponseEntity<>("Showroom doesn't exist",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(showroomOptional);
     }
 
@@ -52,8 +52,8 @@ public class ShowroomController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteShowroom(@PathVariable long id){
         Optional<Showroom> showroom =showroomService.getShowroomById(id);
-        if(!showroom.isPresent())
-            return new ResponseEntity<>("Showroom doesn't exist",HttpStatus.NOT_FOUND);
+        if(showroom.isEmpty())
+            return new ResponseEntity<>("Showroom doesn't exist,can't be deleted",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(showroomService.delete(id));
     }
 }
