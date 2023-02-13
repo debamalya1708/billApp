@@ -149,6 +149,12 @@ public class UserController {
         return ResponseEntity.ok(userOptional);
 
     }
+    @GetMapping("/search/role/{role}")
+    public ResponseEntity<?> searchUserByRole(@PathVariable String role){
+        List<User> customerList = userService.getAll(role);
+        return ResponseEntity.ok(customerList);
+
+    }
 
     @GetMapping("/allContacts")
     public ResponseEntity<?> allUserContacts(){

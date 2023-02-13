@@ -76,6 +76,27 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceDaoService.getAllInvoice();
     }
 
+    @Override
+    public Optional<Invoice> getInvoiceById(long id) {
+        return invoiceDaoService.getInvoiceById(id);
+    }
+
+    @Override
+    public Optional<Invoice> getInvoiceByInvoiceId(String invoiceId) {
+        return invoiceDaoService.getInvoiceByInvoiceId(invoiceId);
+    }
+
+    @Override
+    public Invoice updateInvoice(Invoice invoice) {
+        return invoiceDaoService.updateInvoice(invoice);
+    }
+
+    @Override
+    public String deleteInvoice(long id) {
+        invoiceDaoService.deleteInvoice(id);
+        return "Invoice deleted";
+    }
+
     private String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){

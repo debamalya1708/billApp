@@ -46,7 +46,7 @@ private BankService bankService;
     @GetMapping("/search/{id}")
     public ResponseEntity<?> getBankDetailsById(@PathVariable long id){
       Optional<BankDetails> bankDetailsOption = bankService.getById(id);
-      if(!bankDetailsOption.isPresent())
+      if(bankDetailsOption.isEmpty())
           return new ResponseEntity<>("Bank Details not found",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(bankDetailsOption);
     }
@@ -54,7 +54,7 @@ private BankService bankService;
     @GetMapping("/search/account/{accountNumber}")
     public ResponseEntity<?> getBankDetailsById(@PathVariable String accountNumber){
         Optional<BankDetails> bankDetailsOption = bankService.getBankByAccountNumber(accountNumber);
-        if(!bankDetailsOption.isPresent())
+        if(bankDetailsOption.isEmpty())
             return new ResponseEntity<>("Bank Details not found",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(bankDetailsOption);
     }
@@ -66,6 +66,9 @@ private BankService bankService;
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteBankById(@PathVariable long id){
+        Optional<BankDetails> bankDetailsOption = bankService.getById(id);
+        if(bankDetailsOption.isEmpty())
+            return new ResponseEntity<>("Bank not found,can't be deleted!!!!",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(bankService.delete(id));
     }
 
