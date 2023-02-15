@@ -99,6 +99,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+
+        if(user.getRole().equals(UserConstants.CustomerRole)){
+            user.setPassword("");
+        }
+        else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userDaoService.updateUser(user);
     }
 

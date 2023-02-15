@@ -151,8 +151,20 @@ public class UserController {
     }
     @GetMapping("/search/role/{role}")
     public ResponseEntity<?> searchUserByRole(@PathVariable String role){
-        List<User> customerList = userService.getAll(role);
-        return ResponseEntity.ok(customerList);
+        if(role.equals("customers")){
+            List<User> customerList = userService.getAll(UserConstants.CustomerRole);
+            return ResponseEntity.ok(customerList);
+        }
+        else if(role.equals("employees")){
+            List<User> employeeList = userService.getAll(UserConstants.EditorRole);
+            return ResponseEntity.ok(employeeList);
+        }
+        else if(role.equals("admin")){
+            List<User> adminList = userService.getAll(UserConstants.AdminRole);
+            return ResponseEntity.ok(adminList);
+        }
+
+        return ResponseEntity.ok("List provided!!!!!!!!!!!!");
 
     }
 
