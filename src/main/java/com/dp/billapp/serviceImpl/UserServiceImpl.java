@@ -1,6 +1,7 @@
 package com.dp.billapp.serviceImpl;
 
 import com.dp.billapp.daoService.UserDaoService;
+import com.dp.billapp.helper.JwtUtil;
 import com.dp.billapp.model.User;
 import com.dp.billapp.model.UserConstants;
 import com.dp.billapp.repository.UserRepository;
@@ -9,12 +10,15 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
 
 
     private final UserRepository userRepository;
+    private  final JwtUtil jwtUtil;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -115,4 +120,18 @@ public class UserServiceImpl implements UserService {
         return userDaoService.updateUser(user);
     }
 
+    @Override
+    public boolean validUser(HttpServletRequest request) {
+        String requestHeader = request.getHeader("Authorization");
+        if(requestHeader!=null && requestHeader.startsWith("Bearer ")) {
+            String jwtToken = requestHeader.substring(7);
+            if(jwtUtil.isTokenExpired(jwtToken)){
+                return false;
+            }
+            else if(!jwtUtil.isTokenExpired(jwtToken)){
+                return  true;
+            }
+        }
+        return false;
+    }
 }
