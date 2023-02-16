@@ -59,6 +59,11 @@ public class UserDaoServiceImpl implements UserDaoService {
     }
 
     @Override
+    public List<User> getUserByRole(String role) {
+        return userRepository.findByRole(role);
+    }
+
+    @Override
     public Optional<User> findById(long id) {
         return userRepository.findById(id);
     }

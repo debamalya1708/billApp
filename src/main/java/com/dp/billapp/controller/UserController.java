@@ -168,12 +168,16 @@ public class UserController {
 
     }
 
-    @GetMapping("/allContacts")
-    public ResponseEntity<?> allUserContacts(){
-        List<String> contactList = userService.getAllContacts();
-        return ResponseEntity.ok(contactList);
-
+    //will be enhanced more
+    @GetMapping("/role/contact/{role}")
+    public ResponseEntity<?> getContactNoByRole(@PathVariable String role){
+        if(role.equals("customer") || role.equals("editor")){
+            List<String> contactList = userService.getAllContacts(role);
+            return ResponseEntity.ok(contactList);
+        }
+        return new ResponseEntity<>("Not able to get Users",HttpStatus.NOT_FOUND);
     }
+
     @PutMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody User user){
         Optional<User> userOption = userService.findById(user.getId());

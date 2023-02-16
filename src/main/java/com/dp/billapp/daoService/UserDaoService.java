@@ -18,6 +18,8 @@ public interface UserDaoService {
 
     List<User> getAll(String role);
 
+    List<User> getUserByRole(String role);
+
    Optional<User>  findById(long id);
    List<User> getUsers();
    String deleteById(long id);

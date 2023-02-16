@@ -9,6 +9,7 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,9 +82,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> getAllContacts() {
+    public List<String> getAllContacts(String role) {
         ArrayList<String> contactList = new ArrayList<>();
-        List<User> userList = userDaoService.getUsers();
+        List<User> userList = new ArrayList<>();
+        if(role.equals("customer")){
+            userList = userDaoService.getUserByRole(UserConstants.CustomerRole);
+        }else {
+            userList = userDaoService.getUserByRole(UserConstants.EditorRole);
+        }
         for(User u:userList){
             contactList.add(u.getContact());
         }
