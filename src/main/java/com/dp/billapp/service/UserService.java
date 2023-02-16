@@ -29,7 +29,7 @@ public interface UserService {
 
     User updateUser(User user);
 
-   boolean validUser(HttpServletRequest request);
+   String getContact(HttpServletRequest request);
 
 
 //    List<ContactResponse> searchUser(String userId,SearchRequest searchRequest);

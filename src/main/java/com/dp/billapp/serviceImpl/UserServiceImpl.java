@@ -121,17 +121,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validUser(HttpServletRequest request) {
+    public String getContact(HttpServletRequest request) {
+        String contact="";
         String requestHeader = request.getHeader("Authorization");
         if(requestHeader!=null && requestHeader.startsWith("Bearer ")) {
             String jwtToken = requestHeader.substring(7);
-            if(jwtUtil.isTokenExpired(jwtToken)){
-                return false;
-            }
-            else if(!jwtUtil.isTokenExpired(jwtToken)){
-                return  true;
+            if(!jwtUtil.isTokenExpired(jwtToken)){
+                Map<String, String> map = jwtUtil.getJwtTokenDetails(request);
+                 contact= map.get(UserConstants.contactNo);
             }
         }
-        return false;
+        return contact;
     }
 }

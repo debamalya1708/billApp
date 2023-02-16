@@ -151,13 +151,10 @@ public class UserController {
     }
     @GetMapping("/search/role/{role}")
     public ResponseEntity<?> searchUserByRole(@PathVariable String role,HttpServletRequest request){
-        if(request.getContentLength()==0){
+        if(request.getContentLength()==0)
             return  new ResponseEntity<>("token Not Found!!!",HttpStatus.NOT_FOUND);
-        }
-        boolean isValidUser = userService.validUser(request);
-        if(isValidUser){
-            Map<String, String> map = jwtUtil.getJwtTokenDetails(request);
-            Option<User> userOptional = userService.findByContact(map.get(UserConstants.contactNo));
+        String userContact= userService.getContact(request);
+        Option<User> userOptional = userService.findByContact(userContact);
             if(!userOptional.isEmpty()){
                 if((userOptional.get().getRole().equals(UserConstants.AdminRole)||
                         userOptional.get().getRole().equals(UserConstants.EditorRole))
@@ -175,12 +172,15 @@ public class UserController {
                     List<User> adminList = userService.getAll(UserConstants.AdminRole);
                     return ResponseEntity.ok(adminList);
                 }
+                else if(userOptional.get().getRole().equals(UserConstants.EditorRole)
+                        && role.equals("admeen")){
+                    return new ResponseEntity<>("Access Denied !!!!",HttpStatus.BAD_REQUEST);
+                }
             }
             else {
                 return new ResponseEntity<>("User Not found",HttpStatus.NOT_FOUND);
             }
-        }
-        return new ResponseEntity<>("No Key Found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Access Denied !!!!",HttpStatus.UNAUTHORIZED);
     }
 
     //will be enhanced more
