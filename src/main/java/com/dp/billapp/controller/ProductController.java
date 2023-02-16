@@ -42,7 +42,7 @@ public class ProductController {
         if(productOption.isEmpty())
             return new ResponseEntity<>("Product Not exists!", HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(productOption);
+        return ResponseEntity.ok(productOption.get());
     }
 
     @GetMapping("/search/id/{id}")
@@ -51,7 +51,7 @@ public class ProductController {
         if(productOption.isEmpty())
             return new ResponseEntity<>("Product Not exists!", HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(productOption);
+        return ResponseEntity.ok(productOption.get());
     }
 
     @GetMapping("/allSerialNumber")

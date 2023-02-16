@@ -146,9 +146,20 @@ public class UserController {
         Optional<User> userOptional = userService.findById(id);
         if(userOptional.isEmpty())
             return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(userOptional);
+        return ResponseEntity.ok(userOptional.get());
 
     }
+
+    @GetMapping("/search/contact/{contact}")
+    public ResponseEntity<?> searchUserByContactNo(@PathVariable String contact){
+        Option<User> userOptional = userService.findByContact(contact);
+        if(userOptional.isEmpty())
+            return  new ResponseEntity<>("User Not Found!!!",HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(userOptional.get());
+
+    }
+
+
     @GetMapping("/search/role/{role}")
     public ResponseEntity<?> searchUserByRole(@PathVariable String role,HttpServletRequest request){
         if(request.getContentLength()==0)
