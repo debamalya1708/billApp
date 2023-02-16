@@ -150,22 +150,37 @@ public class UserController {
 
     }
     @GetMapping("/search/role/{role}")
-    public ResponseEntity<?> searchUserByRole(@PathVariable String role){
-        if(role.equals("customers")){
-            List<User> customerList = userService.getAll(UserConstants.CustomerRole);
-            return ResponseEntity.ok(customerList);
-        }
-        else if(role.equals("employees")){
-            List<User> employeeList = userService.getAll(UserConstants.EditorRole);
-            return ResponseEntity.ok(employeeList);
-        }
-        else if(role.equals("admin")){
-            List<User> adminList = userService.getAll(UserConstants.AdminRole);
-            return ResponseEntity.ok(adminList);
-        }
-
-        return ResponseEntity.ok("List provided!!!!!!!!!!!!");
-
+    public ResponseEntity<?> searchUserByRole(@PathVariable String role,HttpServletRequest request){
+        if(request.getContentLength()==0)
+            return  new ResponseEntity<>("token Not Found!!!",HttpStatus.NOT_FOUND);
+        String userContact= userService.getContact(request);
+        Option<User> userOptional = userService.findByContact(userContact);
+            if(!userOptional.isEmpty()){
+                if((userOptional.get().getRole().equals(UserConstants.AdminRole)||
+                        userOptional.get().getRole().equals(UserConstants.EditorRole))
+                                && role.equals("customers")){
+                    List<User> customerList = userService.getAll(UserConstants.CustomerRole);
+                    return ResponseEntity.ok(customerList);
+                }
+                else if(userOptional.get().getRole().equals(UserConstants.AdminRole)
+                        && role.equals("employees")){
+                    List<User> employeeList = userService.getAll(UserConstants.EditorRole);
+                    return ResponseEntity.ok(employeeList);
+                }
+                else if(userOptional.get().getRole().equals(UserConstants.AdminRole)
+                        && role.equals("admeen")){
+                    List<User> adminList = userService.getAll(UserConstants.AdminRole);
+                    return ResponseEntity.ok(adminList);
+                }
+                else if(userOptional.get().getRole().equals(UserConstants.EditorRole)
+                        && role.equals("admeen")){
+                    return new ResponseEntity<>("Access Denied !!!!",HttpStatus.BAD_REQUEST);
+                }
+            }
+            else {
+                return new ResponseEntity<>("User Not found",HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>("Access Denied !!!!",HttpStatus.UNAUTHORIZED);
     }
 
     //will be enhanced more
