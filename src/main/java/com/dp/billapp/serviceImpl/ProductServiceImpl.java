@@ -57,4 +57,9 @@ public class ProductServiceImpl implements ProductService {
         }
         return serialNumberList;
     }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productDaoService.allProducts();
+    }
 }

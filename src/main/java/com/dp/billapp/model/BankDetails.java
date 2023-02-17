@@ -27,4 +27,6 @@ public class BankDetails {
 
     @Column(name = "ifsc_Code")
     private String ifscCode;
+    @Column(name = "bank_name")
+    private String name;
 }

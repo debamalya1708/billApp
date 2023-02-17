@@ -1,10 +1,7 @@
 package com.dp.billapp.controller;
 
 import com.dp.billapp.config.JwtResponse;
-import com.dp.billapp.model.Login;
-import com.dp.billapp.model.Product;
-import com.dp.billapp.model.User;
-import com.dp.billapp.model.UserConstants;
+import com.dp.billapp.model.*;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.ProductService;
 import io.vavr.control.Option;
@@ -34,6 +31,11 @@ public class ProductController {
             return new ResponseEntity<>("Product already exists!", HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.ok(productService.saveProduct(product));
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllProduct(){
+        List<Product> products =productService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/search/{serialNo}")
