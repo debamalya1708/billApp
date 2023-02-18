@@ -194,6 +194,24 @@ public class UserController {
             return new ResponseEntity<>("Access Denied !!!!",HttpStatus.UNAUTHORIZED);
     }
 
+    @GetMapping("/profile")
+    public  ResponseEntity<?> getProfileByContact(HttpServletRequest request){
+        System.out.println("searching profile");
+        if(request.getContentLength()==0)
+            return  new ResponseEntity<>("token Not Found!!!",HttpStatus.NOT_FOUND);
+        String userContact= userService.getContact(request);
+        Option<User> userOptional = userService.findByContact(userContact);
+        if(!userOptional.isEmpty()){
+            if(userOptional.get().getRole().equals(UserConstants.EditorRole)||
+                    userOptional.get().getRole().equals(UserConstants.AdminRole)){
+                return ResponseEntity.ok(userOptional.get());
+            }
+            return  new ResponseEntity<>("Customers Not Allowed",HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("User Not Found !!!",HttpStatus.NOT_FOUND);
+
+    }
+
     //will be enhanced more
     @GetMapping("/role/contact/{role}")
     public ResponseEntity<?> getContactNoByRole(@PathVariable String role){
