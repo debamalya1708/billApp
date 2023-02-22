@@ -110,10 +110,10 @@ public class UserController {
         else{
             user.setRole(UserConstants.CustomerRole);
         }
-        id = userService.saveUser(user).getId();
+        User savedUser = userService.saveUser(user);
 
-        if(id > 0){
-            return new ResponseEntity<>("Registered",HttpStatus.OK);
+        if(savedUser.getId() > 0){
+            return new ResponseEntity<>(savedUser,HttpStatus.OK);
         }
         return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
     }
