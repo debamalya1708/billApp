@@ -5,6 +5,7 @@ import com.dp.billapp.model.*;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.ProductService;
 import io.vavr.control.Option;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,7 @@ public class ProductController {
 
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody Product product){
         Option<Product> productOption = productService.findById(product.getId());
         if(productOption.isEmpty())
@@ -80,6 +81,7 @@ public class ProductController {
 
         return  ResponseEntity.ok(productService.deleteProduct(id));
     }
+
 
 
 }

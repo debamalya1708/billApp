@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
-@Table(name = "product",schema = "public")
+@Table(name = "product")
 public class Product {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -21,7 +21,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "serial_no")
     private String serialNo;
