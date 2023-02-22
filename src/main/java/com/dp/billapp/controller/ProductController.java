@@ -73,7 +73,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(product));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable long id){
         Option<Product> productOption = productService.findById(id);
         if(productOption.isEmpty())
