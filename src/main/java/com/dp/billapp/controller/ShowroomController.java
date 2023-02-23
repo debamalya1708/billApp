@@ -44,12 +44,12 @@ public class ShowroomController {
         return ResponseEntity.ok(showroomOptional);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateShowroom(@RequestBody Showroom showroom){
         return ResponseEntity.ok(showroomService.update(showroom));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteShowroom(@PathVariable long id){
         Optional<Showroom> showroom =showroomService.getShowroomById(id);
         if(showroom.isEmpty())

@@ -222,7 +222,7 @@ public class UserController {
         return new ResponseEntity<>("Not able to get Users",HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody User user){
         Optional<User> userOption = userService.findById(user.getId());
         if(userOption.isEmpty())
@@ -230,7 +230,7 @@ public class UserController {
 
         return ResponseEntity.ok(userService.updateUser(user));
     }
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id){
         Optional<User> userOption = userService.findById(id);
         if(userOption.isEmpty())

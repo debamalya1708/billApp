@@ -59,12 +59,12 @@ private BankService bankService;
         return ResponseEntity.ok(bankDetailsOption);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateBankDetails(@RequestBody BankDetails bankDetails){
         return ResponseEntity.ok(bankService.update(bankDetails));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteBankById(@PathVariable long id){
         Optional<BankDetails> bankDetailsOption = bankService.getById(id);
         if(bankDetailsOption.isEmpty())

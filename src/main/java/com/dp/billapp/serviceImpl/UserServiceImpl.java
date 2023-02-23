@@ -115,7 +115,14 @@ public class UserServiceImpl implements UserService {
             user.setPassword("");
         }
         else{
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            Optional<User> userOptional=userRepository.findById(user.getId());
+            if(user.getPassword().equals(userOptional.get().getPassword())){
+                user.setPassword(user.getPassword());
+            }
+            else{
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+
         }
         return userDaoService.updateUser(user);
     }
