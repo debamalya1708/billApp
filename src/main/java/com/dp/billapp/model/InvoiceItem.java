@@ -15,16 +15,17 @@ public class InvoiceItem {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private long NoOfPieces;
+    private String noOfPieces;
+    private String serialNo;
     private String title;
-    private long hsnCode;
-    private long purity;
+    private String hsnCode;
+    private String purity;
     private String grossWeight;
     private String netWeight;
-    private double rateOfGoldPerGram;
-    private double valueOfGold;
-    private double makingCharges;
-    private double hallMarkingCharges;
-    private double amount;
+    private String rateOfGoldPerGram;
+    private String valueOfGold;
+    private String makingCharges;
+    private String hallMarkingCharges;
+    private String amount;
 
 }

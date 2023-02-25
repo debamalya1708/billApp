@@ -100,7 +100,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){
-            allItemAmount+=invoiceItem.getAmount();
+            allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
         }
         double afterGstCalculation = 0;
         if(isGstEnabled.equals("1")){

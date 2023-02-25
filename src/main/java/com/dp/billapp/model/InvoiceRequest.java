@@ -23,5 +23,5 @@ public class InvoiceRequest {
     String userContact;
     String paymentType;
     String isGstEnabled;
-    List<InvoiceItem> InvoiceDetails = new ArrayList<>();
+    List<InvoiceItem> invoiceDetails = new ArrayList<>();
 }
