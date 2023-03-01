@@ -37,7 +37,7 @@ public class ShowroomController {
     }
 
     @GetMapping("/search/{id}")
-    public ResponseEntity<?> findShowroomById(long id){
+    public ResponseEntity<?> findShowroomById( @PathVariable long id){
        Optional<Showroom> showroomOptional =showroomService.getShowroomById(id);
        if(showroomOptional.isEmpty())
            return new ResponseEntity<>("Showroom doesn't exist",HttpStatus.NOT_FOUND);
