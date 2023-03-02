@@ -61,8 +61,25 @@ public class Invoice {
     @Column(name = "customer", columnDefinition = "json")
     private User customer;
 
+    @Type(type = "json")
+    @Column(name = "updated_by", columnDefinition = "json")
+    private User updated_By;
+
+    @Type(type = "json")
+    @Column(name = "created_by", columnDefinition = "json")
+    private User created_By;
+
+    @Column(name = "created_at")
+    private String createdAt;
+
+    @Column(name = "updated_at")
+    private String updatedAt;
+
     @Column(name = "payment_type")
     private String paymentType;
+
+    @Column(name = "is_gst")
+    private String isGst;
 
     @Column(name = "s_gst")
     private double sGst;

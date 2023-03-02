@@ -34,7 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private BankRepository bankRepository;
 
     @Override
-    public Invoice saveInvoice(InvoiceRequest invoiceRequest) {
+    public Invoice saveInvoice(InvoiceRequest invoiceRequest , User employee) {
 
         final double gst = 1.5;
 
@@ -47,6 +47,20 @@ public class InvoiceServiceImpl implements InvoiceService {
         log.info("#  invoice request - {}", invoiceRequest);
 
         Invoice invoice = new Invoice();
+
+        invoice.setCreated_By(employee);
+
+        invoice.setUpdated_By(employee);
+
+        Date date = new Date();
+        String strDateFormat = "dd/MM/yyyy/hhmmssa";
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
+        String formattedDate = dateFormat.format(date);
+
+        invoice.setCreatedAt(formattedDate);
+
+        invoice.setUpdatedAt(formattedDate);
 
         invoice.setInvoiceDetails(invoiceRequest.getInvoiceDetails());
 
@@ -62,9 +76,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setPaymentType(invoiceRequest.getPaymentType());
 
-        invoice.setCGst(gst);
+        invoice.setIsGst(invoiceRequest.getIsGstEnabled());
 
-        invoice.setSGst(gst);
+        if(invoice.getIsGst().equals("0")){
+            invoice.setCGst(0);
+            invoice.setSGst(0);
+        }else{
+            invoice.setCGst(gst);
+            invoice.setSGst(gst);
+        }
 
         invoice.setTotalAmount(getTotalAmount(invoiceRequest.getInvoiceDetails(),gst, invoiceRequest.getIsGstEnabled()));
 

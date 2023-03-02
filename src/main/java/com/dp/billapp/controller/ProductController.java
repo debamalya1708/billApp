@@ -4,9 +4,11 @@ import com.dp.billapp.config.JwtResponse;
 import com.dp.billapp.model.*;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.ProductService;
+import com.dp.billapp.service.UserService;
 import io.vavr.control.Option;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Column;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Slf4j
 @RestController
@@ -25,11 +33,30 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("/save")
-    public ResponseEntity<?> saveProduct(@RequestBody Product product){
-        Option<Product> productOption = productService.findBySerialNo(product.getSerialNo());
+    public ResponseEntity<?> saveProduct(@RequestBody ProductRequest productRequest, HttpServletRequest request){
+        if(request.getContentLength()==0)
+            return  new ResponseEntity<>("Token Not Found!!!",HttpStatus.NOT_FOUND);
+        String userContact= userService.getContact(request);
+        Option<User> userOptional = userService.findByContact(userContact);
+
+        Option<Product> productOption = productService.findBySerialNo(productRequest.getSerialNo());
         if(!productOption.isEmpty())
             return new ResponseEntity<>("Product already exists!", HttpStatus.BAD_REQUEST);
+
+        Date date = new Date();
+        String strDateFormat = "dd/MM/yyyy/hhmmssa";
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
+        String formattedDate = dateFormat.format(date);
+
+        Product product = Product.builder().createdBy(userOptional.get()).updatedBy(userOptional.get()).purity(productRequest.getPurity())
+                .grossWeight(productRequest.getGrossWeight()).netWeight(productRequest.getNetWeight())
+                .name(productRequest.getName()).serialNo(productRequest.getSerialNo()).createdAt(formattedDate)
+                .updatedAt(formattedDate).build();
 
         return ResponseEntity.ok(productService.saveProduct(product));
     }
@@ -65,10 +92,34 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateProduct(@RequestBody Product product){
-        Option<Product> productOption = productService.findById(product.getId());
+    public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateRequest productUpdateRequest, HttpServletRequest request){
+
+        if(request.getContentLength()==0)
+            return  new ResponseEntity<>("Token Not Found!!!",HttpStatus.NOT_FOUND);
+        String userContact= userService.getContact(request);
+        Option<User> userOptional = userService.findByContact(userContact);
+
+        Date date = new Date();
+        String strDateFormat = "dd/MM/yyyy/hhmmssa";
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
+        String formattedDate = dateFormat.format(date);
+
+        Option<Product> productOption = productService.findById(productUpdateRequest.getId());
         if(productOption.isEmpty())
             return new ResponseEntity<>("Product doesn't exists,can't be updated!!!!",HttpStatus.NOT_FOUND);
+
+        Product product = Product.builder()
+                .id(productOption.get().getId())
+                .createdBy(productOption.get().getCreatedBy())
+                .updatedBy(userOptional.get())
+                .purity(productUpdateRequest.getPurity())
+                .grossWeight(productUpdateRequest.getGrossWeight())
+                .netWeight(productUpdateRequest.getNetWeight())
+                .name(productUpdateRequest.getName())
+                .serialNo(productUpdateRequest.getSerialNo())
+                .createdAt(productOption.get().getCreatedAt())
+                .updatedAt(formattedDate).build();
 
         return ResponseEntity.ok(productService.updateProduct(product));
     }
@@ -82,6 +133,35 @@ public class ProductController {
         return  ResponseEntity.ok(productService.deleteProduct(id));
     }
 
+    @Data
+    static class ProductRequest{
 
+        private String serialNo;
 
+        private String name;
+
+        private String purity;
+
+        private String grossWeight;
+
+        private String netWeight;
+
+    }
+
+    @Data
+    static class ProductUpdateRequest{
+
+        private long Id;
+
+        private String serialNo;
+
+        private String name;
+
+        private String purity;
+
+        private String grossWeight;
+
+        private String netWeight;
+
+    }
 }
