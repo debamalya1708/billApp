@@ -2,6 +2,7 @@ package com.dp.billapp.service;
 
 import com.dp.billapp.model.Invoice;
 import com.dp.billapp.model.InvoiceRequest;
+import com.dp.billapp.model.UpdateInvoiceRequest;
 import com.dp.billapp.model.User;
 
 import java.util.List;

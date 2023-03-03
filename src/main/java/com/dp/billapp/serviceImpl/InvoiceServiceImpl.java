@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -117,7 +118,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return "Invoice deleted";
     }
 
-    private String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
+   public String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){
             allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
