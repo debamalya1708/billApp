@@ -51,6 +51,5 @@ public class Showroom {
 
     private String hallMarkLogo;
 
-    @Column(name = "signature")
-    private String signature;
+
 }
