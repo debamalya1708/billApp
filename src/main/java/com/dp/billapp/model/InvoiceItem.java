@@ -17,7 +17,7 @@ public class InvoiceItem {
 
     private String noOfPieces;
     private String serialNo;
-    private String title;
+    private String name;
     private String hsnCode;
     private String purity;
     private String grossWeight;
