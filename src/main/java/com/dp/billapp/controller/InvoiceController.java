@@ -49,7 +49,7 @@ public class InvoiceController {
         Option<User> userOptional = userService.findByContact(userContact);
 
 
-        Invoice invoice = invoiceService.saveInvoice(invoiceRequest , userOptional.get());
+        InvoiceResponse invoice = invoiceService.saveInvoice(invoiceRequest , userOptional.get());
 
         return ResponseEntity.ok(invoice);
     }
@@ -61,11 +61,11 @@ public class InvoiceController {
 
     @GetMapping("/search/{id}")
     public ResponseEntity<?> findInvoiceById(@PathVariable long id){
-        Optional<Invoice> invoiceOptional =invoiceService.getInvoiceById(id);
-        if(invoiceOptional.isEmpty())
+        InvoiceResponse invoiceResponse =invoiceService.getInvoiceById(id);
+        if(invoiceResponse==null)
             return new ResponseEntity<>("Invoice Not exists!", HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(invoiceOptional);
+        return ResponseEntity.ok(invoiceResponse);
     }
     @GetMapping("/search/invoice/{invoiceId}")
     public ResponseEntity<?> findInvoiceById(@PathVariable String invoiceId){
@@ -93,20 +93,20 @@ public class InvoiceController {
         dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         String formattedDate = dateFormat.format(date);
 
-        Optional<Invoice> invoiceOptional = invoiceService.getInvoiceById(updateInvoiceRequest.getId());
-        if(invoiceOptional.isEmpty())
+        InvoiceResponse invoiceResponse = invoiceService.getInvoiceById(updateInvoiceRequest.getId());
+        if(invoiceResponse == null)
             return new ResponseEntity<>("Invoice Not exists!", HttpStatus.NOT_FOUND);
 
         Invoice invoice = Invoice.builder()
                 .id(updateInvoiceRequest.getId())
-                .invoiceId(invoiceOptional.get().getInvoiceId())
-                .invoiceDate(invoiceOptional.get().getInvoiceDate())
-                .showroom(showroom.get())
-                .bankDetails(bank.get())
-                .customer(customer.get())
-                .created_By(invoiceOptional.get().getCreated_By())
-                .createdAt(invoiceOptional.get().getCreatedAt())
-                .updated_By(employee.get())
+                .invoiceId(invoiceResponse.getInvoiceId())
+                .invoiceDate(invoiceResponse.getInvoiceDate())
+                .showroomId(showroom.get().getId())
+                .bankId(bank.get().getId())
+                .customerId(customer.get().getId())
+                .createdBy(invoiceResponse.getCreatedBy())
+                .createdAt(invoiceResponse.getCreatedAt())
+                .updatedBy(employee.get())
                 .updatedAt(formattedDate)
                 .paymentType(updateInvoiceRequest.getPaymentType())
                 .isGst(updateInvoiceRequest.getIsGstEnabled())
@@ -122,8 +122,8 @@ public class InvoiceController {
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteInvoice(@PathVariable long id){
-        Optional<Invoice> invoice =invoiceService.getInvoiceById(id);
-        if(invoice.isEmpty())
+        InvoiceResponse invoiceResponse =invoiceService.getInvoiceById(id);
+        if(invoiceResponse == null)
             return new ResponseEntity<>("Invoice doesn't exist,can't be deleted",HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(invoiceService.deleteInvoice(id));
     }

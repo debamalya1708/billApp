@@ -35,7 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private BankRepository bankRepository;
 
     @Override
-    public Invoice saveInvoice(InvoiceRequest invoiceRequest , User employee) {
+    public InvoiceResponse saveInvoice(InvoiceRequest invoiceRequest , User employee) {
 
         final double gst = 1.5;
 
@@ -47,36 +47,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         log.info("#  invoice request - {}", invoiceRequest);
 
-        Invoice invoice = new Invoice();
-
-        invoice.setCreated_By(employee);
-
-        invoice.setUpdated_By(employee);
-
         Date date = new Date();
         String strDateFormat = "dd/MM/yyyy/hhmmssa";
         DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
         dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         String formattedDate = dateFormat.format(date);
 
+        Invoice invoice = new Invoice();
+        invoice.setCreatedBy(employee);
+        invoice.setUpdatedBy(employee);
         invoice.setCreatedAt(formattedDate);
-
         invoice.setUpdatedAt(formattedDate);
-
         invoice.setInvoiceDetails(invoiceRequest.getInvoiceDetails());
-
         invoice.setInvoiceId(generateInvoiceId(invoiceRequest.getInvoiceDate()));
-
         invoice.setInvoiceDate(invoiceRequest.getInvoiceDate());
-
-        invoice.setShowroom(showroom.get());
-
-        invoice.setBankDetails(bank.get());
-
-        invoice.setCustomer(user.get());
-
+        invoice.setShowroomId(showroom.get().getId());
+        invoice.setBankId(bank.get().getId());
+        invoice.setCustomerId(user.get().getId());
         invoice.setPaymentType(invoiceRequest.getPaymentType());
-
         invoice.setIsGst(invoiceRequest.getIsGstEnabled());
 
         if(invoice.getIsGst().equals("0")){
@@ -89,17 +77,84 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setTotalAmount(getTotalAmount(invoiceRequest.getInvoiceDetails(),gst, invoiceRequest.getIsGstEnabled()));
 
-        return invoiceDaoService.saveInvoice(invoice);
+
+        Invoice response = invoiceDaoService.saveInvoice(invoice);
+
+        InvoiceResponse invoiceResponse = InvoiceResponse.builder()
+                .id(response.getId())
+                .invoiceId(response.getInvoiceId())
+                .invoiceDate(response.getInvoiceDate())
+                .showroom(showroom.get())
+                .bankDetails(bank.get())
+                .customer(user.get())
+                .updatedBy(employee)
+                .createdBy(employee)
+                .updatedAt(formattedDate)
+                .createdAt(formattedDate)
+                .paymentType(response.getPaymentType())
+                .isGst(response.getIsGst())
+                .cGst(response.getCGst())
+                .sGst(response.getSGst())
+                .totalAmount(response.getTotalAmount())
+                .invoiceDetails(response.getInvoiceDetails())
+                .build();
+
+        return invoiceResponse;
     }
 
     @Override
-    public List<Invoice> getAllInvoice() {
-        return invoiceDaoService.getAllInvoice();
+    public List<InvoiceResponse> getAllInvoice() {
+        List<Invoice> invoiceList =  invoiceDaoService.getAllInvoice();
+        List<InvoiceResponse> invoiceResponseList = new ArrayList<>();
+        for(Invoice response:invoiceList){
+            InvoiceResponse invoiceResponse = InvoiceResponse.builder()
+                    .id(response.getId())
+                    .invoiceId(response.getInvoiceId())
+                    .invoiceDate(response.getInvoiceDate())
+                    .showroom(showroomRepository.findById(response.getShowroomId()).get())
+                    .bankDetails(bankRepository.findById(response.getBankId()).get())
+                    .customer(userRepository.findById(response.getCustomerId()).get())
+                    .updatedBy(response.getUpdatedBy())
+                    .createdBy(response.getCreatedBy())
+                    .updatedAt(response.getCreatedAt())
+                    .createdAt(response.getUpdatedAt())
+                    .paymentType(response.getPaymentType())
+                    .isGst(response.getIsGst())
+                    .cGst(response.getCGst())
+                    .sGst(response.getSGst())
+                    .totalAmount(response.getTotalAmount())
+                    .invoiceDetails(response.getInvoiceDetails())
+                    .build();
+            invoiceResponseList.add(invoiceResponse);
+        }
+        return invoiceResponseList;
+
     }
 
     @Override
-    public Optional<Invoice> getInvoiceById(long id) {
-        return invoiceDaoService.getInvoiceById(id);
+    public InvoiceResponse getInvoiceById(long id) {
+        Optional<Invoice> result = invoiceDaoService.getInvoiceById(id);
+        Invoice response = result.get();
+        InvoiceResponse invoiceResponse = InvoiceResponse.builder()
+                .id(response.getId())
+                .invoiceId(response.getInvoiceId())
+                .invoiceDate(response.getInvoiceDate())
+                .showroom(showroomRepository.findById(response.getShowroomId()).get())
+                .bankDetails(bankRepository.findById(response.getBankId()).get())
+                .customer(userRepository.findById(response.getCustomerId()).get())
+                .updatedBy(response.getUpdatedBy())
+                .createdBy(response.getCreatedBy())
+                .updatedAt(response.getCreatedAt())
+                .createdAt(response.getUpdatedAt())
+                .paymentType(response.getPaymentType())
+                .isGst(response.getIsGst())
+                .cGst(response.getCGst())
+                .sGst(response.getSGst())
+                .totalAmount(response.getTotalAmount())
+                .invoiceDetails(response.getInvoiceDetails())
+                .build();
+
+        return invoiceResponse;
     }
 
     @Override

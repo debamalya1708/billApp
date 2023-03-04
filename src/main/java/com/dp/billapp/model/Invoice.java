@@ -48,26 +48,22 @@ public class Invoice {
     @Column(name = "invoice_date")
     private String invoiceDate;
 
+    @Column(name = "showroom_id")
+    private long showroomId;
 
-    @Type(type = "json")
-    @Column(name = "showroom", columnDefinition = "json")
-    private Showroom showroom;
+    @Column(name = "bank_id")
+    private long bankId;
 
-    @Type(type = "json")
-    @Column(name = "bank", columnDefinition = "json")
-    private BankDetails bankDetails;
-
-    @Type(type = "json")
-    @Column(name = "customer", columnDefinition = "json")
-    private User customer;
+    @Column(name = "customer_id")
+    private long customerId;
 
     @Type(type = "json")
     @Column(name = "updated_by", columnDefinition = "json")
-    private User updated_By;
+    private User updatedBy;
 
     @Type(type = "json")
     @Column(name = "created_by", columnDefinition = "json")
-    private User created_By;
+    private User createdBy;
 
     @Column(name = "created_at")
     private String createdAt;

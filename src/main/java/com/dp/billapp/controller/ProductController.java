@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 @Slf4j
@@ -132,6 +133,18 @@ public class ProductController {
 
         return  ResponseEntity.ok(productService.deleteProduct(id));
     }
+
+
+    @PostMapping("/status/{id}")
+    public ResponseEntity<Product> productStatus(@PathVariable long id) {
+        Option<Product> product = productService.findById(id);
+        if(!product.isEmpty()){
+            if(product.get().getInStock().equals("0"))product.get().setInStock("1");
+            else product.get().setInStock("0");
+        }
+        return  ResponseEntity.ok(productService.saveProduct(product.get()));
+    }
+
 
     @Data
     static class ProductRequest{

@@ -69,4 +69,7 @@ public class Product {
     @Column(name = "updated_at")
     private String updatedAt;
 
+    @Column(name = "in_stock")
+    private String inStock;
+
 }
