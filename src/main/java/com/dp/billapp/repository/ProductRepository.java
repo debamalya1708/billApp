@@ -13,5 +13,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Option<Product> findBySerialNo(String serialNo);
     Option<Product> findById(long id);
+    List<Product> findByInStock(String value);
 
 }

@@ -1,7 +1,7 @@
 package com.dp.billapp.daoServiceImpl;
 
-import com.dp.billapp.daoService.GoldrateDaoService;
-import com.dp.billapp.model.Goldrate;
+import com.dp.billapp.daoService.GoldRateDaoService;
+import com.dp.billapp.model.GoldRate;
 import com.dp.billapp.repository.GoldrateRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,21 +10,21 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class GoldrateDaoServiceImpl implements GoldrateDaoService {
+public class GoldRateDaoServiceImpl implements GoldRateDaoService {
 
     GoldrateRepository goldrateRepository;
     @Override
-    public Goldrate saveGoldrate(Goldrate goldrate) {
+    public GoldRate saveGoldrate(GoldRate goldrate) {
         return goldrateRepository.save(goldrate);
     }
 
     @Override
-    public List<Goldrate> getGoldRate() {
+    public List<GoldRate> getGoldRate() {
         return goldrateRepository.findAll();
     }
 
     @Override
-    public Goldrate updateGoldrate(Goldrate goldrate) {
+    public GoldRate updateGoldrate(GoldRate goldrate) {
         return goldrateRepository.save(goldrate);
     }
 }

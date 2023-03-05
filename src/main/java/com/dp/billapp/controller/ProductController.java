@@ -2,6 +2,7 @@ package com.dp.billapp.controller;
 
 import com.dp.billapp.config.JwtResponse;
 import com.dp.billapp.model.*;
+import com.dp.billapp.repository.ProductRepository;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.ProductService;
 import com.dp.billapp.service.UserService;
@@ -89,6 +90,19 @@ public class ProductController {
     public ResponseEntity<?> allSerialNumbers(){
         List<String> serialNumberList = productService.getallSerialNo();
         return ResponseEntity.ok(serialNumberList);
+
+    }
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @GetMapping("/all/status/{value}")
+    public ResponseEntity<?> findProductByStock(@PathVariable String value){
+        List<Product> productListByStockValue = productRepository.findByInStock(value);
+        if(productListByStockValue.size()>0){
+            return ResponseEntity.ok(productListByStockValue);
+        }
+        return ResponseEntity.ok(productService.getAllProducts());
 
     }
 

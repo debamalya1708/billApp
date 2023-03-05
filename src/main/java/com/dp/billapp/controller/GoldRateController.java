@@ -1,8 +1,7 @@
 package com.dp.billapp.controller;
 
-import com.dp.billapp.model.Goldrate;
-import com.dp.billapp.model.Showroom;
-import com.dp.billapp.service.GoldrateService;
+import com.dp.billapp.model.GoldRate;
+import com.dp.billapp.service.GoldRateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,24 +14,24 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value="/goldrate")
-public class GoldrateController {
+public class GoldRateController {
 
-    GoldrateService goldrateService;
+    GoldRateService goldrateService;
     @PostMapping("/save")
-    public ResponseEntity<?> saveGoldRate(@RequestBody Goldrate goldrate){
+    public ResponseEntity<?> saveGoldRate(@RequestBody GoldRate goldrate){
         log.info("#  showroom - {}", goldrate);
         if(goldrate == null)
             return new ResponseEntity<>("Invalid input", HttpStatus.BAD_REQUEST);
-        Goldrate rate = goldrateService.saveGoldrate(goldrate);
+        GoldRate rate = goldrateService.saveGoldrate(goldrate);
         return ResponseEntity.ok(rate);
     }
     @GetMapping("/all")
     public ResponseEntity<?> getGoldRate(){
-        List<Goldrate> rates = goldrateService.getGoldRate();
+        List<GoldRate> rates = goldrateService.getGoldRate();
         return ResponseEntity.ok(rates.get(0));
     }
     @PostMapping("/update")
-    public ResponseEntity<?> updateGoldRate(@RequestBody Goldrate goldrate){
+    public ResponseEntity<?> updateGoldRate(@RequestBody GoldRate goldrate){
         return ResponseEntity.ok(goldrateService.updateGoldrate(goldrate));
     }
 }
