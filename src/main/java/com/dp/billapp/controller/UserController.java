@@ -10,6 +10,7 @@ import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.CustomUserDetailsService;
 import com.dp.billapp.service.UserService;
 import io.vavr.control.Option;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +104,7 @@ public class UserController {
             return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
         }
 
-        long id = 0;
+
 
         if(!user.getPassword().equals("")){
             user.setRole(UserConstants.EditorRole);
@@ -110,6 +112,41 @@ public class UserController {
         else{
             user.setRole(UserConstants.CustomerRole);
         }
+        User savedUser = userService.saveUser(user);
+
+        if(savedUser.getId() > 0){
+            return new ResponseEntity<>(savedUser,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/customer/register")
+    public ResponseEntity<?> registerCustomer(@RequestBody CustomerRequest customerRequest){
+        Option<User> userOptional = userRepository.findByContact(customerRequest.getContact());
+        Option<User> singleUser = userRepository.findByEmail(customerRequest.getEmail());
+        boolean isValidEmail = userService.isEmailValid(customerRequest.getEmail());
+
+        if(!isValidEmail){
+            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+        if(!userOptional.isEmpty()){
+            return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
+        }
+
+        if(!singleUser.isEmpty()){
+            return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = User.builder()
+                .name(customerRequest.getName())
+                .address(customerRequest.getAddress())
+                .email(customerRequest.getEmail())
+                .contact(customerRequest.getContact())
+                .role(UserConstants.CustomerRole)
+                .password("")
+                .build();
         User savedUser = userService.saveUser(user);
 
         if(savedUser.getId() > 0){
@@ -265,6 +302,15 @@ public class UserController {
         return new ResponseEntity<>("No Key found",HttpStatus.UNAUTHORIZED);
     }
 
+    @Data
+ static  class  CustomerRequest{
 
+
+     private String email;
+     private String contact;
+     private String name;
+
+     private String address;
+ }
 
 }

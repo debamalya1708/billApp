@@ -58,7 +58,8 @@ public class ProductController {
         Product product = Product.builder().createdBy(userOptional.get()).updatedBy(userOptional.get()).purity(productRequest.getPurity())
                 .grossWeight(productRequest.getGrossWeight()).netWeight(productRequest.getNetWeight())
                 .name(productRequest.getName()).serialNo(productRequest.getSerialNo()).createdAt(formattedDate)
-                .updatedAt(formattedDate).build();
+                .updatedAt(formattedDate)
+                .inStock("1").build();
 
         return ResponseEntity.ok(productService.saveProduct(product));
     }
