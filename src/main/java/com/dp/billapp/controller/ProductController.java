@@ -135,6 +135,7 @@ public class ProductController {
                 .name(productUpdateRequest.getName())
                 .serialNo(productUpdateRequest.getSerialNo())
                 .createdAt(productOption.get().getCreatedAt())
+                .inStock(productUpdateRequest.getInStock())
                 .updatedAt(formattedDate).build();
 
         return ResponseEntity.ok(productService.updateProduct(product));
@@ -190,6 +191,8 @@ public class ProductController {
         private String grossWeight;
 
         private String netWeight;
+
+        private String inStock;
 
     }
 }
