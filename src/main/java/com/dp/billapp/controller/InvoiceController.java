@@ -120,7 +120,7 @@ public class InvoiceController {
 
         return ResponseEntity.ok(invoiceService.updateInvoice(invoice));
     }
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteInvoice(@PathVariable long id){
         InvoiceResponse invoiceResponse =invoiceService.getInvoiceById(id);
         if(invoiceResponse == null)
