@@ -124,11 +124,11 @@ public class UserController {
     public ResponseEntity<?> registerCustomer(@RequestBody CustomerRequest customerRequest){
         Option<User> userOptional = userRepository.findByContact(customerRequest.getContact());
         Option<User> singleUser = userRepository.findByEmail(customerRequest.getEmail());
-        boolean isValidEmail = userService.isEmailValid(customerRequest.getEmail());
-
-        if(!isValidEmail){
-            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
-        }
+//        boolean isValidEmail = userService.isEmailValid(customerRequest.getEmail());
+//
+//        if(!isValidEmail){
+//            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
+//        }
 
 
         if(!userOptional.isEmpty()){
