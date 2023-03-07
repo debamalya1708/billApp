@@ -2,10 +2,7 @@ package com.dp.billapp.controller;
 
 import com.dp.billapp.config.JwtResponse;
 import com.dp.billapp.helper.JwtUtil;
-import com.dp.billapp.model.Login;
-import com.dp.billapp.model.Product;
-import com.dp.billapp.model.User;
-import com.dp.billapp.model.UserConstants;
+import com.dp.billapp.model.*;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.CustomUserDetailsService;
 import com.dp.billapp.service.UserService;
@@ -86,37 +83,44 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user){
-        Option<User> userOptional = userRepository.findByContact(user.getContact());
-        Option<User> singleUser = userRepository.findByEmail(user.getEmail());
-        boolean isValidEmail = userService.isEmailValid(user.getEmail());
-
-        if(!isValidEmail){
-            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
-        }
+    public ResponseEntity<?> register(@RequestBody EmployeeRequest employeeRequest){
+        Option<User> userOptional = userRepository.findByContact(employeeRequest.getContact());
+//        Option<User> singleUser = userRepository.findByEmail(employeeRequest.getEmail());
+//        boolean isValidEmail = userService.isEmailValid(employeeRequest.getEmail());
+//
+//        if(!isValidEmail){
+//            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
+//        }
 
 
         if(!userOptional.isEmpty()){
             return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
         }
 
-        if(!singleUser.isEmpty()){
-            return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
-        }
+//        if(!singleUser.isEmpty()){
+//            return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
+//        }
+
+         if( !employeeRequest.getPassword().equals("")) {
+            User user =User.builder()
+                     .name(employeeRequest.getName())
+                     .password(employeeRequest.getPassword())
+                     .role(UserConstants.EditorRole)
+                     .contact(employeeRequest.getContact())
+                     .email(employeeRequest.getEmail())
+                     .address(employeeRequest.getAddress())
+                     .additionalUserDetails(employeeRequest.getAdditionalUserDetails())
+                     .build();
+
+             User savedUser = userService.saveUser(user);
+             log.info("#  saved user id - {}", savedUser.getId());
+
+             if(savedUser.getId() > 0){
+                 return new ResponseEntity<>(savedUser,HttpStatus.OK);
+             }
+         }
 
 
-
-        if(!user.getPassword().equals("")){
-            user.setRole(UserConstants.EditorRole);
-        }
-        else{
-            user.setRole(UserConstants.CustomerRole);
-        }
-        User savedUser = userService.saveUser(user);
-
-        if(savedUser.getId() > 0){
-            return new ResponseEntity<>(savedUser,HttpStatus.OK);
-        }
         return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
     }
 
@@ -139,12 +143,14 @@ public class UserController {
             return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
         }
 
-        User user = User.builder()
+        User user =
+                User.builder()
                 .name(customerRequest.getName())
                 .address(customerRequest.getAddress())
                 .email(customerRequest.getEmail())
                 .contact(customerRequest.getContact())
                 .role(UserConstants.CustomerRole)
+                .additionalUserDetails(new AdditionalUserDetails())
                 .password("")
                 .build();
         User savedUser = userService.saveUser(user);
@@ -156,9 +162,9 @@ public class UserController {
     }
 
     @PostMapping("/admin/register")
-    public ResponseEntity<?> registerAdmin(@RequestBody User user){
-        Option<User> userOptional = userRepository.findByContact(user.getContact());
-        Option<User> singleUser = userRepository.findByEmail(user.getEmail());
+    public ResponseEntity<?> registerAdmin(@RequestBody AdminRequest adminRequest){
+        Option<User> userOptional = userRepository.findByContact(adminRequest.getContact());
+        Option<User> singleUser = userRepository.findByEmail(adminRequest.getEmail());
 
         if(!userOptional.isEmpty()){
             return new ResponseEntity<>("admin with given contact no. already exists", HttpStatus.BAD_REQUEST);
@@ -167,15 +173,24 @@ public class UserController {
             return new ResponseEntity<>("admin with given email already exists", HttpStatus.BAD_REQUEST);
         }
 
-        long id = 0;
-        if(user.getRole().equals(UserConstants.AdminRegKey)){
-            user.setRole(UserConstants.AdminRole);
-            id = userService.saveUser(user).getId();
+       if(adminRequest.getRole().equals(UserConstants.AdminRegKey)){
+          User  user =  User.builder()
+                    .name(adminRequest.getName())
+                    .address(adminRequest.getAddress())
+                    .email(adminRequest.getEmail())
+                    .contact(adminRequest.getContact())
+                    .role(UserConstants.AdminRole)
+                    .additionalUserDetails(new AdditionalUserDetails())
+                    .password(adminRequest.getPassword())
+                    .build();
+           long id = userService.saveUser(user).getId();
+           if(id > 0){
+               return new ResponseEntity<>("Registered",HttpStatus.OK);
+           }
         }
-        if(id > 0){
-            return new ResponseEntity<>("Registered",HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Something Went wrong, Try again!",HttpStatus.BAD_REQUEST);
+
+           return new ResponseEntity<>("Not authorized to sign up!!!",HttpStatus.BAD_REQUEST);
+
     }
 
     @GetMapping("/search/{id}")
@@ -312,5 +327,26 @@ public class UserController {
 
      private String address;
  }
+    @Data
+    static  class  EmployeeRequest{
+
+        private String password;
+        private String email;
+        private String contact;
+        private String name;
+        private AdditionalUserDetails additionalUserDetails;
+        private String address;
+    }
+    @Data
+    static  class  AdminRequest{
+
+        private String password;
+        private String email;
+        private String contact;
+        private String name;
+        private String role;
+
+        private String address;
+    }
 
 }
