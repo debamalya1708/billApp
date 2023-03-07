@@ -10,4 +10,5 @@ public interface DraftService {
 
     InvoiceResponse saveInvoice(InvoiceRequest invoiceRequest, User user);
     List<InvoiceResponse> getAllInvoice();
+    InvoiceResponse getDraftInvoiceById(String id);
 }

@@ -1,9 +1,7 @@
 package com.dp.billapp.controller;
 
 
-import com.dp.billapp.model.InvoiceRequest;
-import com.dp.billapp.model.InvoiceResponse;
-import com.dp.billapp.model.User;
+import com.dp.billapp.model.*;
 import com.dp.billapp.repository.BankRepository;
 import com.dp.billapp.repository.ShowroomRepository;
 import com.dp.billapp.repository.UserRepository;
@@ -19,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -57,6 +56,15 @@ public class DraftController {
     @GetMapping("/all")
     public ResponseEntity<?> allInvoice(){
         return ResponseEntity.ok(draftService.getAllInvoice());
+    }
+
+    @GetMapping("/search/draft/{invoiceId}")
+    public ResponseEntity<?> findDraftById(@PathVariable String invoiceId){
+        InvoiceResponse invoiceOptional =draftService.getDraftInvoiceById(invoiceId);
+        if(invoiceOptional == null)
+            return new ResponseEntity<>("Draft Not exists!", HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(invoiceOptional);
     }
 
 }

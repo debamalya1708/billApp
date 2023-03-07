@@ -133,6 +133,33 @@ public class DraftServiceImpl  implements DraftService {
         return invoiceResponseList;
     }
 
+
+    @Override
+    public InvoiceResponse getDraftInvoiceById(String id) {
+        Optional<Draft> result = draftDaoService.getDraftInvoiceById(id);
+        Draft response = result.get();
+        InvoiceResponse invoiceResponse = InvoiceResponse.builder()
+                .id(response.getId())
+                .invoiceId(response.getInvoiceId())
+                .invoiceDate(response.getInvoiceDate())
+                .showroom(showroomRepository.findById(response.getShowroomId()).get())
+                .bankDetails(bankRepository.findById(response.getBankId()).get())
+                .customer(userRepository.findById(response.getCustomerId()).get())
+                .updatedBy(response.getUpdatedBy())
+                .createdBy(response.getCreatedBy())
+                .updatedAt(response.getCreatedAt())
+                .createdAt(response.getUpdatedAt())
+                .paymentType(response.getPaymentType())
+                .isGst(response.getIsGst())
+                .cGst(response.getCGst())
+                .sGst(response.getSGst())
+                .totalAmount(response.getTotalAmount())
+                .invoiceDetails(response.getInvoiceDetails())
+                .build();
+
+        return invoiceResponse;
+    }
+
     public String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){
