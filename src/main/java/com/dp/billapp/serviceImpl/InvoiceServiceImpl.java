@@ -3,6 +3,7 @@ package com.dp.billapp.serviceImpl;
 import com.dp.billapp.daoService.InvoiceDaoService;
 import com.dp.billapp.model.*;
 import com.dp.billapp.repository.BankRepository;
+import com.dp.billapp.repository.DraftRepository;
 import com.dp.billapp.repository.ShowroomRepository;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.InvoiceService;
@@ -33,6 +34,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private BankRepository bankRepository;
+
+    @Autowired
+    private DraftRepository draftRepository;
 
     @Override
     public InvoiceResponse saveInvoice(InvoiceRequest invoiceRequest , User employee) {
@@ -78,6 +82,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setTotalAmount(getTotalAmount(invoiceRequest.getInvoiceDetails(),gst, invoiceRequest.getIsGstEnabled()));
 
 
+        if(draftRepository.findByInvoiceId(invoiceRequest.getInvoiceId()).isPresent()){
+            Optional<Draft> draftResponse = draftRepository.findByInvoiceId(invoiceRequest.getInvoiceId());
+            draftRepository.deleteById(draftResponse.get().getId());
+        }
         Invoice response = invoiceDaoService.saveInvoice(invoice);
 
         InvoiceResponse invoiceResponse = InvoiceResponse.builder()
@@ -176,7 +184,10 @@ public class InvoiceServiceImpl implements InvoiceService {
    public String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){
-            allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
+            if (!invoiceItem.getAmount().equals(""))
+                allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
+            else
+                allItemAmount+=0;
         }
         double afterGstCalculation = 0;
         if(isGstEnabled.equals("1")){

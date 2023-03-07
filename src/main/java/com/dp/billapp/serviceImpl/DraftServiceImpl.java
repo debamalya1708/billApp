@@ -163,7 +163,11 @@ public class DraftServiceImpl  implements DraftService {
     public String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){
-            allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
+            if (!invoiceItem.getAmount().equals(""))
+                allItemAmount+=Double.parseDouble(invoiceItem.getAmount());
+            else
+                allItemAmount+=0;
+
         }
         double afterGstCalculation = 0;
         if(isGstEnabled.equals("1")){

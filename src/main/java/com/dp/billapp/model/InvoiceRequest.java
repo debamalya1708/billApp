@@ -18,6 +18,7 @@ public class InvoiceRequest {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     String invoiceDate;
+    String invoiceId;
     long showroomId;
     long bankId;
     String userContact;
