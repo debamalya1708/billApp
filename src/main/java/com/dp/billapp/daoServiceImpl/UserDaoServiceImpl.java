@@ -55,12 +55,12 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public List<User> getAll(String role) {
-        return userRepository.findByRole(role);
+        return userRepository.findByRoleAndIsActive(role,"1");
     }
 
     @Override
     public List<User> getUserByRole(String role) {
-        return userRepository.findByRole(role);
+        return userRepository.findByRoleAndIsActive(role,"1");
     }
 
     @Override
@@ -75,7 +75,9 @@ public class UserDaoServiceImpl implements UserDaoService {
 
     @Override
     public String deleteById(long id) {
-        userRepository.deleteById(id);
+        Optional<User> user = userRepository.findById(id);
+        user.get().setIsActive("0");
+        userRepository.save(user.get());
         return "User has been deleted";
     }
 

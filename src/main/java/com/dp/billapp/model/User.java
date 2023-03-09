@@ -56,6 +56,9 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "is_active")
+    private String isActive;
+
     @Column(name = "address")
     private String address;
     @Type(type = "json")

@@ -73,6 +73,9 @@ public class DraftController {
     public ResponseEntity<?> updateDraft(@RequestBody UpdateDraftRequest updateDraftRequest, HttpServletRequest request){
         if(request.getContentLength()==0)
             return  new ResponseEntity<>("Token Not Found!!!",HttpStatus.NOT_FOUND);
+        InvoiceResponse invoiceResponse = draftService.getDraftInvoiceById(updateDraftRequest.getInvoiceId());
+        if(invoiceResponse == null)
+            return new ResponseEntity<>("Invoice Not exists!", HttpStatus.NOT_FOUND);
         String userContact= userService.getContact(request);
         Option<User> employee = userService.findByContact(userContact);
         Option<User> customer = userRepository.findByContact(updateDraftRequest.getUserContact());
@@ -86,10 +89,6 @@ public class DraftController {
         DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
         dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         String formattedDate = dateFormat.format(date);
-
-        InvoiceResponse invoiceResponse = draftService.getDraftInvoiceById(updateDraftRequest.getInvoiceId());
-        if(invoiceResponse == null)
-            return new ResponseEntity<>("Invoice Not exists!", HttpStatus.NOT_FOUND);
 
         Draft draft = Draft.builder()
                 .id(updateDraftRequest.getId())
@@ -109,8 +108,6 @@ public class DraftController {
                 .invoiceDetails(updateDraftRequest.getInvoiceDetails())
                 .totalAmount(invoiceServiceImpl.getTotalAmount(updateDraftRequest.getInvoiceDetails(),1.5, updateDraftRequest.getIsGstEnabled()))
                 .build();
-
-
 
         return ResponseEntity.ok(draftService.updateDraft(draft));
     }

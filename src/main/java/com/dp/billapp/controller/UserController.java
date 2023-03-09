@@ -85,21 +85,9 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody EmployeeRequest employeeRequest){
         Option<User> userOptional = userRepository.findByContact(employeeRequest.getContact());
-//        Option<User> singleUser = userRepository.findByEmail(employeeRequest.getEmail());
-//        boolean isValidEmail = userService.isEmailValid(employeeRequest.getEmail());
-//
-//        if(!isValidEmail){
-//            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
-//        }
-
-
         if(!userOptional.isEmpty()){
             return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
         }
-
-//        if(!singleUser.isEmpty()){
-//            return new ResponseEntity<>("user with given email already exists", HttpStatus.BAD_REQUEST);
-//        }
 
          if( !employeeRequest.getPassword().equals("")) {
             User user =User.builder()
@@ -110,6 +98,7 @@ public class UserController {
                      .email(employeeRequest.getEmail())
                      .address(employeeRequest.getAddress())
                      .additionalUserDetails(employeeRequest.getAdditionalUserDetails())
+                    .isActive("1")
                      .build();
 
              User savedUser = userService.saveUser(user);
@@ -128,12 +117,6 @@ public class UserController {
     public ResponseEntity<?> registerCustomer(@RequestBody CustomerRequest customerRequest){
         Option<User> userOptional = userRepository.findByContact(customerRequest.getContact());
         Option<User> singleUser = userRepository.findByEmail(customerRequest.getEmail());
-//        boolean isValidEmail = userService.isEmailValid(customerRequest.getEmail());
-//
-//        if(!isValidEmail){
-//            return new ResponseEntity<>("Invalid Email!", HttpStatus.NOT_ACCEPTABLE);
-//        }
-
 
         if(!userOptional.isEmpty()){
             return new ResponseEntity<>("user with given contact no. already exists!", HttpStatus.BAD_REQUEST);
@@ -151,6 +134,7 @@ public class UserController {
                 .contact(customerRequest.getContact())
                 .role(UserConstants.CustomerRole)
                 .additionalUserDetails(new AdditionalUserDetails())
+                        .isActive("1")
                 .password("")
                 .build();
         User savedUser = userService.saveUser(user);
@@ -182,6 +166,7 @@ public class UserController {
                     .role(UserConstants.AdminRole)
                     .additionalUserDetails(new AdditionalUserDetails())
                     .password(adminRequest.getPassword())
+                  .isActive("1")
                     .build();
            long id = userService.saveUser(user).getId();
            if(id > 0){
