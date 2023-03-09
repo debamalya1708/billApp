@@ -160,6 +160,11 @@ public class DraftServiceImpl  implements DraftService {
         return invoiceResponse;
     }
 
+    @Override
+    public Draft updateDraft(Draft draft) {
+        return draftDaoService.updateDraft(draft);
+    }
+
     public String getTotalAmount(List<InvoiceItem> invoiceDetails, double gst, String isGstEnabled) {
         double allItemAmount = 0 ;
         for(InvoiceItem invoiceItem:invoiceDetails){

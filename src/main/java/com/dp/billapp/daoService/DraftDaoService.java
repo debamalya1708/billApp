@@ -10,4 +10,5 @@ public interface DraftDaoService {
     Draft saveInvoice(Draft draft);
     List<Draft> getAllInvoice();
     Optional<Draft> getDraftInvoiceById(String id);
+    Draft updateDraft(Draft draft);
 }

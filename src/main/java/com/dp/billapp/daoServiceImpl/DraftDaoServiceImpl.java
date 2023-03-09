@@ -30,4 +30,9 @@ public class DraftDaoServiceImpl implements DraftDaoService {
     public Optional<Draft> getDraftInvoiceById(String id) {
         return draftRepository.findByInvoiceId(id);
     }
+
+    @Override
+    public Draft updateDraft(Draft draft) {
+        return draftRepository.save(draft);
+    }
 }

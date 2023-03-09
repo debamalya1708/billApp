@@ -10,6 +10,7 @@ import com.dp.billapp.service.InvoiceService;
 import com.dp.billapp.service.UserService;
 import com.dp.billapp.serviceImpl.InvoiceServiceImpl;
 import io.vavr.control.Option;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -65,6 +68,65 @@ public class DraftController {
             return new ResponseEntity<>("Draft Not exists!", HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(invoiceOptional);
+    }
+    @PostMapping("/update")
+    public ResponseEntity<?> updateDraft(@RequestBody UpdateDraftRequest updateDraftRequest, HttpServletRequest request){
+        if(request.getContentLength()==0)
+            return  new ResponseEntity<>("Token Not Found!!!",HttpStatus.NOT_FOUND);
+        String userContact= userService.getContact(request);
+        Option<User> employee = userService.findByContact(userContact);
+        Option<User> customer = userRepository.findByContact(updateDraftRequest.getUserContact());
+
+        Optional<Showroom> showroom = showroomRepository.findById(updateDraftRequest.getShowroomId());
+
+        Optional<BankDetails> bank = bankRepository.findById(updateDraftRequest.getBankId());
+
+        Date date = new Date();
+        String strDateFormat = "dd/MM/yyyy/hhmmssa";
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
+        String formattedDate = dateFormat.format(date);
+
+        InvoiceResponse invoiceResponse = draftService.getDraftInvoiceById(updateDraftRequest.getInvoiceId());
+        if(invoiceResponse == null)
+            return new ResponseEntity<>("Invoice Not exists!", HttpStatus.NOT_FOUND);
+
+        Draft draft = Draft.builder()
+                .id(updateDraftRequest.getId())
+                .invoiceId(invoiceResponse.getInvoiceId())
+                .invoiceDate(invoiceResponse.getInvoiceDate())
+                .showroomId(showroom.get().getId())
+                .bankId(bank.get().getId())
+                .customerId(customer.get().getId())
+                .createdBy(invoiceResponse.getCreatedBy())
+                .createdAt(invoiceResponse.getCreatedAt())
+                .updatedBy(employee.get())
+                .updatedAt(formattedDate)
+                .paymentType(updateDraftRequest.getPaymentType())
+                .isGst(updateDraftRequest.getIsGstEnabled())
+                .sGst(updateDraftRequest.getIsGstEnabled().equals("1")?1.5:0.0)
+                .cGst(updateDraftRequest.getIsGstEnabled().equals("1")?1.5:0.0)
+                .invoiceDetails(updateDraftRequest.getInvoiceDetails())
+                .totalAmount(invoiceServiceImpl.getTotalAmount(updateDraftRequest.getInvoiceDetails(),1.5, updateDraftRequest.getIsGstEnabled()))
+                .build();
+
+
+
+        return ResponseEntity.ok(draftService.updateDraft(draft));
+    }
+
+    @Data
+    public static class UpdateDraftRequest {
+        private long id;
+        String invoiceId;
+        String invoiceDate;
+        long showroomId;
+        long bankId;
+        String userContact;
+        String paymentType;
+        String isGstEnabled;
+        List<InvoiceItem> invoiceDetails = new ArrayList<>();
+
     }
 
 }
