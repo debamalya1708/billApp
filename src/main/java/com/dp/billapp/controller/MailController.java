@@ -1,26 +1,24 @@
 package com.dp.billapp.controller;
 
-import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.kernel.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.core.io.ByteArrayResource;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.*;
+import java.nio.file.Files;
 
 @Slf4j
 @RestController
@@ -28,53 +26,8 @@ import java.io.IOException;
 @RequestMapping(value="/mail")
 public class MailController {
 
-//    @Autowired
-//    ServletContext servletContext;
-//
-//    @Autowired
-//    private final TemplateEngine templateEngine;
-
-//    public MailController(TemplateEngine templateEngine) {
-//        this.templateEngine = templateEngine;
-//    }
-
-
-    private final PdfWriter pdfWriter;
-
-    @PostMapping(path = "/pdf")
-    public void getPDF() throws IOException {
-
-//        /* Do Business Logic*/
-//
-////        Order order = OrderHelper.getOrder();
-//
-//        /* Create HTML using Thymeleaf template Engine */
-//
-//        WebContext context = new WebContext(request,response,servletContext);
-////        context.setVariable("orderEntry", order);
-//        String orderHtml = templateEngine.process("invoice", context);
-//
-//        /* Setup Source and target I/O streams */
-//
-//        ByteArrayOutputStream target = new ByteArrayOutputStream();
-//
-//        /*Setup converter properties. */
-//        ConverterProperties converterProperties = new ConverterProperties();
-//        converterProperties.setBaseUri("http://localhost:8081");
-//
-//        /* Call convert method */
-//        HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
-//
-//        /* extract output as bytes */
-//        byte[] bytes = target.toByteArray();
-//
-//
-//        /* Send the response as downloadable PDF */
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(bytes);
-
+    @GetMapping("/pdf")
+    public void generatePdf() throws IOException, MessagingException {
         String html = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -85,9 +38,61 @@ public class MailController {
                 "    <h2>Delivery Address</h2>\n" +
                 "</body>\n" +
                 "</html>";
+        byte[] response =generatePdfFromHtml(html,"output");
 
 
-        System.out.print(HtmlConverter.convertToDocument(html,pdfWriter));
+        OutputStream out = new FileOutputStream("out.pdf");
+        out.write(response);
+        out.close();
+
+        getLocationOfPdf();
 
     }
+    public byte[] generatePdfFromHtml(String html, String name) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        HtmlConverter.convertToPdf(html, buffer);
+        byte[] pdfAsBytes = buffer.toByteArray();
+        try (FileOutputStream fos = new FileOutputStream(name)) {
+            fos.write(pdfAsBytes);
+        }
+       return pdfAsBytes;
+    }
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    public void getLocationOfPdf() throws MessagingException, IOException {
+        Resource resource = resourceLoader.getResource("./out.pdf");
+        File file = null;
+
+        try {
+            file = resource.getFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (file != null) {
+            System.out.println(file.getAbsolutePath());
+        }
+        sendMail();
+    }
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+public void sendMail() throws MessagingException, IOException {
+    MimeMessage message = javaMailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+    helper.setTo("shreyarakshit04@gmail.com");
+    helper.setFrom("hippycheeksart@gmail.com");
+    helper.setSubject("Test Email");
+    helper.setText("This is a test email with an attachment.");
+
+    byte[] fileBytes = Files.readAllBytes(new File("./out.pdf").toPath());
+    ByteArrayResource fileResource = new ByteArrayResource(fileBytes);
+
+    helper.addAttachment("out.pdf", fileResource);
+
+    javaMailSender.send(message);
+}
 }
