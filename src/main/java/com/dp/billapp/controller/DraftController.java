@@ -3,6 +3,7 @@ package com.dp.billapp.controller;
 
 import com.dp.billapp.model.*;
 import com.dp.billapp.repository.BankRepository;
+import com.dp.billapp.repository.DraftRepository;
 import com.dp.billapp.repository.ShowroomRepository;
 import com.dp.billapp.repository.UserRepository;
 import com.dp.billapp.service.DraftService;
@@ -40,6 +41,8 @@ public class DraftController {
     BankRepository bankRepository;
     @Autowired
     InvoiceServiceImpl invoiceServiceImpl;
+    @Autowired
+    DraftRepository draftRepository;
 
 
     @PostMapping("/save")
@@ -111,6 +114,12 @@ public class DraftController {
 
         return ResponseEntity.ok(draftService.updateDraft(draft));
     }
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<?> deleteDraftById(@PathVariable long id) {
+        draftRepository.deleteById(id);
+        return ResponseEntity.ok("draft deleted!!!!!!!!!");
+    }
+
 
     @Data
     public static class UpdateDraftRequest {
