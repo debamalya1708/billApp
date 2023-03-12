@@ -58,8 +58,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         String formattedDate = dateFormat.format(date);
 
         Invoice invoice = new Invoice();
-        invoice.setCreatedBy(employee);
-        invoice.setUpdatedBy(employee);
+        invoice.setCreatedBy(employee.getId());
+        invoice.setUpdatedBy(employee.getId());
         invoice.setCreatedAt(formattedDate);
         invoice.setUpdatedAt(formattedDate);
         invoice.setInvoiceDetails(invoiceRequest.getInvoiceDetails());
@@ -122,8 +122,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                     .showroom(showroomRepository.findById(response.getShowroomId()).get())
                     .bankDetails(bankRepository.findById(response.getBankId()).get())
                     .customer(userRepository.findById(response.getCustomerId()).get())
-                    .updatedBy(response.getUpdatedBy())
-                    .createdBy(response.getCreatedBy())
+                    .updatedBy(userRepository.findById(response.getUpdatedBy()).get())
+                    .createdBy(userRepository.findById(response.getCreatedBy()).get())
                     .updatedAt(response.getCreatedAt())
                     .createdAt(response.getUpdatedAt())
                     .paymentType(response.getPaymentType())
@@ -150,8 +150,8 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .showroom(showroomRepository.findById(response.getShowroomId()).get())
                 .bankDetails(bankRepository.findById(response.getBankId()).get())
                 .customer(userRepository.findById(response.getCustomerId()).get())
-                .updatedBy(response.getUpdatedBy())
-                .createdBy(response.getCreatedBy())
+                .updatedBy(userRepository.findById(response.getUpdatedBy()).get())
+                .createdBy(userRepository.findById(response.getCreatedBy()).get())
                 .updatedAt(response.getCreatedAt())
                 .createdAt(response.getUpdatedAt())
                 .paymentType(response.getPaymentType())

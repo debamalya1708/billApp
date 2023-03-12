@@ -54,8 +54,8 @@ public class DraftServiceImpl  implements DraftService {
         String formattedDate = dateFormat.format(date);
 
         Draft draft = new Draft();
-        draft.setCreatedBy(employee);
-        draft.setUpdatedBy(employee);
+        draft.setCreatedBy(employee.getId());
+        draft.setUpdatedBy(employee.getId());
         draft.setCreatedAt(formattedDate);
         draft.setUpdatedAt(formattedDate);
         draft.setInvoiceDetails(invoiceRequest.getInvoiceDetails());
@@ -89,8 +89,8 @@ public class DraftServiceImpl  implements DraftService {
                 .showroom(showroom.get())
                 .bankDetails(bank.get())
                 .customer(user.get())
-                .updatedBy(employee)
-                .createdBy(employee)
+                .updatedBy(userRepository.findById(employee.getId()).get())
+                .createdBy(userRepository.findById(employee.getId()).get())
                 .updatedAt(formattedDate)
                 .createdAt(formattedDate)
                 .paymentType(response.getPaymentType())
@@ -117,8 +117,8 @@ public class DraftServiceImpl  implements DraftService {
                     .showroom(showroomRepository.findById(response.getShowroomId()).get())
                     .bankDetails(bankRepository.findById(response.getBankId()).get())
                     .customer(userRepository.findById(response.getCustomerId()).get())
-                    .updatedBy(response.getUpdatedBy())
-                    .createdBy(response.getCreatedBy())
+                    .updatedBy(userRepository.findById(response.getUpdatedBy()).get())
+                    .createdBy(userRepository.findById(response.getCreatedBy()).get())
                     .updatedAt(response.getCreatedAt())
                     .createdAt(response.getUpdatedAt())
                     .paymentType(response.getPaymentType())
@@ -145,8 +145,8 @@ public class DraftServiceImpl  implements DraftService {
                 .showroom(showroomRepository.findById(response.getShowroomId()).get())
                 .bankDetails(bankRepository.findById(response.getBankId()).get())
                 .customer(userRepository.findById(response.getCustomerId()).get())
-                .updatedBy(response.getUpdatedBy())
-                .createdBy(response.getCreatedBy())
+                .updatedBy(userRepository.findById(response.getUpdatedBy()).get())
+                .createdBy(userRepository.findById(response.getCreatedBy()).get())
                 .updatedAt(response.getCreatedAt())
                 .createdAt(response.getUpdatedAt())
                 .paymentType(response.getPaymentType())

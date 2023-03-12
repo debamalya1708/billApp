@@ -55,13 +55,11 @@ public class Product {
     @Column(name = "net_weight")
     private String netWeight;
 
-    @Type(type = "json")
-    @Column(name = "created_by", columnDefinition = "json")
-    private User createdBy;
+    @Column(name = "created_by")
+    private long createdBy;
 
-    @Type(type = "json")
-    @Column(name = "updated_by", columnDefinition = "json")
-    private User updatedBy;
+    @Column(name = "updated_by")
+    private long updatedBy;
 
     @Column(name = "created_at")
     private String createdAt;

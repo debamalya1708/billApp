@@ -55,7 +55,7 @@ public class ProductController {
         dateFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         String formattedDate = dateFormat.format(date);
 
-        Product product = Product.builder().createdBy(userOptional.get()).updatedBy(userOptional.get()).purity(productRequest.getPurity())
+        Product product = Product.builder().createdBy(userOptional.get().getId()).updatedBy(userOptional.get().getId()).purity(productRequest.getPurity())
                 .grossWeight(productRequest.getGrossWeight()).netWeight(productRequest.getNetWeight())
                 .name(productRequest.getName()).serialNo(productRequest.getSerialNo()).createdAt(formattedDate)
                 .updatedAt(formattedDate)
@@ -128,7 +128,7 @@ public class ProductController {
         Product product = Product.builder()
                 .id(productOption.get().getId())
                 .createdBy(productOption.get().getCreatedBy())
-                .updatedBy(userOptional.get())
+                .updatedBy(userOptional.get().getId())
                 .purity(productUpdateRequest.getPurity())
                 .grossWeight(productUpdateRequest.getGrossWeight())
                 .netWeight(productUpdateRequest.getNetWeight())

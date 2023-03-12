@@ -57,13 +57,11 @@ public class Invoice {
     @Column(name = "customer_id")
     private long customerId;
 
-    @Type(type = "json")
-    @Column(name = "updated_by", columnDefinition = "json")
-    private User updatedBy;
+    @Column(name = "updated_by")
+    private long updatedBy;
 
-    @Type(type = "json")
-    @Column(name = "created_by", columnDefinition = "json")
-    private User createdBy;
+    @Column(name = "created_by")
+    private long createdBy;
 
     @Column(name = "created_at")
     private String createdAt;
