@@ -261,6 +261,7 @@ public class UserController {
 
     @PostMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody User user){
+        user.setIsActive("1");
         Optional<User> userOption = userService.findById(user.getId());
         if(userOption.isEmpty())
             return new ResponseEntity<>("User doesn't exists,can't be updated!!!!",HttpStatus.NOT_FOUND);
