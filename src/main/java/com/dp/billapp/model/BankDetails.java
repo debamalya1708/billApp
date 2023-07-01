@@ -29,4 +29,6 @@ public class BankDetails {
     private String ifscCode;
     @Column(name = "bank_name")
     private String name;
+    @Column(name = "is_active")
+    private String isActive;
 }

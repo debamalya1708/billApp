@@ -27,13 +27,22 @@ private BankService bankService;
     public ResponseEntity<?> saveBankDetails(@RequestBody BankDetails bankDetails){
         Optional<BankDetails> detailsOptional= bankService.getBankByAccountNumber(bankDetails.getAccountNumber());
 
-        if(detailsOptional.isPresent())
+        if(detailsOptional.isPresent() && detailsOptional.get().getIsActive().equals("1"))
             return new ResponseEntity<>("Bank details already present", HttpStatus.BAD_REQUEST);
 
         if(bankService.isAllDetailsPresent(bankDetails.getAccountNumber(), bankDetails.getIfscCode()))
             return new ResponseEntity<>("Some details are not filled", HttpStatus.BAD_REQUEST);
+        BankDetails details;
+        if(detailsOptional.isPresent() && detailsOptional.get().getIsActive().equals("0")){
 
-        BankDetails details = bankService.save(bankDetails);
+            detailsOptional.get().setIsActive("1");
+           details = bankService.save(detailsOptional.get());
+        }
+        else{
+            bankDetails.setIsActive("1");
+            details = bankService.save(bankDetails);
+        }
+
         return ResponseEntity.ok(details);
     }
 
@@ -61,6 +70,7 @@ private BankService bankService;
 
     @PostMapping("/update")
     public ResponseEntity<?> updateBankDetails(@RequestBody BankDetails bankDetails){
+        bankDetails.setIsActive("1");
         return ResponseEntity.ok(bankService.update(bankDetails));
     }
 

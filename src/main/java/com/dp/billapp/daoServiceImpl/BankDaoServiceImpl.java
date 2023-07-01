@@ -22,7 +22,8 @@ public class BankDaoServiceImpl implements BankDaoService {
 
     @Override
     public List<BankDetails> getAllBankDetails() {
-        return bankRepository.findAll();
+
+        return bankRepository.findAllByIsActive("1");
     }
 
     @Override
@@ -37,8 +38,11 @@ public class BankDaoServiceImpl implements BankDaoService {
 
     @Override
     public String deleteBankDetails(long id) {
-        bankRepository.deleteById(id);
-        return "Bank Details Deleted";
+      Optional<BankDetails> bank = bankRepository.findById(id);
+      bank.get().setIsActive("0");
+      bankRepository.save(bank.get());
+
+        return "Bank deactivated !!!";
     }
 
     @Override

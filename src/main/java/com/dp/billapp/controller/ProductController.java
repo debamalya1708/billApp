@@ -22,10 +22,7 @@ import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -99,11 +96,15 @@ public class ProductController {
 
     @GetMapping("/all/status/{value}")
     public ResponseEntity<?> findProductByStock(@PathVariable String value){
+        System.out.println(value);
+        if(value.equals("2")){
+            return  ResponseEntity.ok(productService.getAllProducts());
+        }
         List<Product> productListByStockValue = productRepository.findByInStock(value);
         if(productListByStockValue.size()>0){
             return ResponseEntity.ok(productListByStockValue);
         }
-        return ResponseEntity.ok(productService.getAllProducts());
+        return ResponseEntity.ok(new ArrayList<>());
 
     }
 
