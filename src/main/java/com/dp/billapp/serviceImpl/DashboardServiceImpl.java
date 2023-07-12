@@ -31,6 +31,7 @@ public class DashboardServiceImpl {
 
         long totalOrders =  invoiceRepository.findAll().size();
         long totalProducts =  productRepository.findAll().size();
+        long totalProductInStock = productRepository.findByInStock("1").size();
         long totalActiveCustomers =  userRepository.findByRoleAndIsActive(UserConstants.CustomerRole,"1").size();
         long totalCustomers=userRepository.findByRole(UserConstants.CustomerRole).size();
         long totalActiveEmployees = userRepository.findByRoleAndIsActive(UserConstants.EditorRole,"1").size();
@@ -42,6 +43,7 @@ public class DashboardServiceImpl {
 
         Dashboard dashboard = Dashboard.builder()
                 .totalProducts(totalProducts)
+                .totalProductsInStock(totalProductInStock)
                 .totalEmployees(totalEmployees)
                 .totalActiveEmployees(totalActiveEmployees)
                 .totalCustomers(totalCustomers)

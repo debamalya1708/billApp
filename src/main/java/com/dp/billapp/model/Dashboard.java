@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class Dashboard {
 
     private long totalProducts;
+    private long totalProductsInStock;
     private long totalCustomers;
     private long totalActiveCustomers;
     private long totalOrders;
